@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bde242bc-8528-4e3e-a937-c0a1c4c69d3c" name="Dream_yun">
+        <fileTransfer accessType="SFTP" host="dsy" port="22" sshConfigId="6970aa90-6adf-4996-84ba-2d71b9574918" sshConfig="root@dsy:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
