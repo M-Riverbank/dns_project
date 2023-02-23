@@ -21,7 +21,7 @@
     <property>
         <name>fs.defaultFS</name>
         <!-- hadoop是你自己配置的主机名，代表当前虚拟机 -->
-        <value>hdfs://0.0.0.0:9000</value>
+        <value>hdfs://dsy:9000</value>
     </property>
     <!--配置hadoop运行时产生数据的存储目录， 不是临时目录-->
     <property>

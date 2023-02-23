@@ -18,7 +18,7 @@
     <!--指定resourcemanager地址-->
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>han</value>
+        <value>dsy</value>
     </property>
     <!--指定mapreduce执行shuffle时获取数据的方式-->
     <property>
@@ -43,11 +43,26 @@
     <!-- 设置yarn历史服务器地址 -->
     <property>
         <name>yarn.log.server.url</name>
-        <value>http://0.0.0.0:19888/jobhistory/logs</value>
+        <value>http://dsy:19888/jobhistory/logs</value>
     </property>
     <!-- 历史日志保存的时间 7天 -->
     <property>
         <name>yarn.log-aggregation.retain-seconds</name>
         <value>604800</value>
+    </property>
+    <!--开启聚合日志-->
+    <property>
+        <name>yarn.log-aggregation-enable</name>
+        <value>true</value>
+    </property>
+    <!--设置聚合日志放置的位置///tmp/logs是hdfs分布式系统上面的，自己创建自定义的文件夹-->
+    <property>
+        <name>yarn.nodemanager.remote-app-log-dir</name>
+        <value>/tmp/logs</value>
+    </property>
+    <!--设置聚合日志存放的时间，单位为秒，会自动移除-->
+    <property>
+        <name>yarn.log-aggregation.retain-seconds</name>
+        <value>3600</value>
     </property>
 </configuration>
