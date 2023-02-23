@@ -1,3 +1,5 @@
+import dsy.config.configs
+import dsy.config.configs.config
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object hdfs_test {
@@ -23,7 +25,7 @@ object hdfs_test {
       .option("encoding", "utf-8") //utf-8
       //"D:\\data\\dns_data_test.csv"
       //"/soft/data/DNS_DATA/dns_data_test.csv"
-      .load("/soft/data/DNS_DATA/dns_data_test.csv")
+      .load(configs.LOAD_FILE)
 
     data.show(1000, truncate = false)
     println(data.count())

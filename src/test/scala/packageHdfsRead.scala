@@ -1,11 +1,8 @@
-package dsy.read_hdfs
-
-
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object packageHdfsRead {
-  System.setProperty("HADOOP_USER_NAME", "root");
-  System.setProperty("user.name", "root");
+  System.setProperty("HADOOP_USER_NAME", "root")
+  System.setProperty("user.name", "root")
 
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
