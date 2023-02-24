@@ -18,6 +18,18 @@
     </properties>
 
     <dependencies>
+        <!--主要提供Structured streaming读取kafka-->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-0-10_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <!--通过json转换-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.71</version>
+        </dependency>
         <!--解决io.netty.buffer.PooledByteBufAllocator.defaultNumHeapArena()I异常，-->
         <dependency>
             <groupId>io.netty</groupId>
