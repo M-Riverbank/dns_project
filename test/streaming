@@ -1,0 +1,4 @@
+nohup sh /soft/data/DNS_DATA/read.sh &
+nohup /soft/filebeat/filebeat -e -c /soft/filebeat/filebeat.yml > filebeat.log &
+#消费
+/soft/kafka/bin/kafka-console-consumer.sh --bootstrap-server dsy:9092 --topic test --from-beginning
