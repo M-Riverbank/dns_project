@@ -9,6 +9,18 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+        <!--hadoop依赖-->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>2.7.7</version>
+        </dependency>
         <!--读取config.properties-->
         <dependency>
             <groupId>com.typesafe</groupId>
@@ -18,38 +30,20 @@
         <!--主要提供SparkConf和SparkContext对象-->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.12</artifactId>
-            <version>3.2.0</version>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.4.5</version>
         </dependency>
         <!--主要提供SparkSession对象-->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.12</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <!--主要提供Structured streaming读取kafka-->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql-kafka-0-10_2.12</artifactId>
-            <version>3.2.0</version>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.4.5</version>
         </dependency>
         <!--通过json转换-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.71</version>
-        </dependency>
-        <!--hdfs客户端依赖-->
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client-api</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-        <!--提供spark读取hive-->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-hive_2.12</artifactId>
-            <version>3.2.0</version>
+            <version>1.2.83</version>
         </dependency>
     </dependencies>
     <build>

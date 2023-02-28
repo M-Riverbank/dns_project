@@ -1,10 +1,10 @@
 ----------------------------------------------------------------
-Mon Feb 27 21:01:12 CST 2023:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0186-92f6-7a66-000025d069f0 
-on database directory C:\Users\han\Desktop\dns_project\metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@5cdf221a 
+Tue Feb 28 11:05:22 CST 2023:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0186-95fb-57e2-0000168db720 
+on database directory C:\Users\han\Desktop\dns_project\metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@141aba65 
 Loaded from file:/C:/Users/han/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
-java.vendor=Amazon.com Inc.
-java.runtime.version=1.8.0_322-b06
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_361-b09
 user.dir=C:\Users\han\Desktop\dns_project
 os.name=Windows 10
 os.arch=amd64
