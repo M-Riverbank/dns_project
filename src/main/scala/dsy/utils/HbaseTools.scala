@@ -4,10 +4,10 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
-import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 
 object HbaseTools {
   /**
@@ -49,7 +49,10 @@ object HbaseTools {
         fields.foreach { field =>
           //获取key与value的值并转换为字节数组
           val key: Array[Byte] = Bytes.toBytes(field)
-          val value: Array[Byte] = Bytes.toBytes(row.getAs[String](field))
+          var value: Array[Byte] = null
+          val key_String: String = row.getAs[String](field)
+          //如果字段值不为空则写入，否则写入 null
+          if (key_String != null) value = Bytes.toBytes(key_String)
           //写入put对象
           put.addColumn(familyBytes, key, value)
         }

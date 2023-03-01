@@ -1,14 +1,7 @@
 package dsy.read_hdfs
 
 import dsy.config.configs
-import dsy.utils.SparkUtils
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.HBaseConfiguration
-import org.apache.hadoop.hbase.client.Put
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
-import org.apache.hadoop.hbase.util.Bytes
-import org.apache.spark.rdd.RDD
+import dsy.utils.{HbaseTools, SparkUtils}
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -59,49 +52,24 @@ object read_hdfs_write_to_hbase {
           $"dns_ip"
         ).show(10,truncate = false)
      */
-
-    //写入Hbase
-    //a.Hbase的连接信息
-    val conf: Configuration = HBaseConfiguration.create()
-    conf.set("hbase.zookeeper.quorum", "dsy") //zookeeper地址
-    conf.set("hbase.zookeeper.property.clientPort", "2181") //zookeeper端口号
-    conf.set(TableOutputFormat.OUTPUT_TABLE, "test") //写入的表名称
-    //b.将DataFrame类型转换为RDD[(ImmutableBytesWritable, Put)]
-    val columns: Array[String] = new_data.columns
-    val familyBytes: Array[Byte] = Bytes.toBytes("info")
-
-    val datasRDD: RDD[(ImmutableBytesWritable, Put)] = new_data.rdd
-      .map {
-        row => {
-          //获取rowKey的值
-          val rowKey: Array[Byte] = Bytes.toBytes(row.getAs[String]("id"))
-          //构建Put对象
-          val put: Put = new Put(rowKey)
-          //获取key与value的字节数组值,批量写入put对象
-          columns
-            .foreach(file => {
-              //将字段名与字段值转换为字节数组
-              val key: Array[Byte] = Bytes.toBytes(file)
-              var value: Array[Byte] = null
-              val value_String = row.getAs[String](file)
-              if (value_String != null)
-                value = Bytes.toBytes(value_String)
-              //写入put对象
-              put.addColumn(familyBytes, key, value)
-            })
-          (new ImmutableBytesWritable(rowKey), put)
-        }
-      }
-
-    //c.开始写入
-    datasRDD.saveAsNewAPIHadoopFile(
-      s"hbase/tmp/output-${System.nanoTime()}",
-      classOf[ImmutableBytesWritable],
-      classOf[Put],
-      classOf[TableOutputFormat[ImmutableBytesWritable]],
-      conf
+    /**
+     * 将数据保存到HBase表中
+     *
+     * dataFrame    保存的数据
+     * zkHosts      zookeeper地址
+     * zkPort       zookeeper端口号
+     * table        Hbase表名称
+     * family       列簇名
+     * rowKeyColumn RowKey字段名称
+     */
+    HbaseTools.write(
+      new_data,
+      "dsy",
+      "2181",
+      "test",
+      "info",
+      "id"
     )
-
     spark.stop()
   }
 }

@@ -48,24 +48,27 @@ object SparkUtils {
     if (configs.SPARK_IS_LOCAL) {
       sparkConf.setMaster(configs.SPARK_MASTER)
     }
-    sparkConf
-      //不验证输出参数
-      .set("spark.hadoop.validateOutputSpecs", "False")
-      // 设置使用Kryo序列
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      // 注册哪些类型使用Kryo序列化, 最好注册RDD中类型
-      .registerKryoClasses(
-        Array(classOf[ImmutableBytesWritable], classOf[Put])
-      )
-    // 3. 创建SparkSession.Builder对象
+    // 3. 是否集成 Hbase
+    if (configs.SPARK_ADD_HBASE) {
+      sparkConf
+        //验证输出参数
+        .set("spark.hadoop.validateOutputSpecs", configs.SPARK_HADOOP_VALIDATEOUTPUTSPECS)
+        // 设置使用Kryo序列
+        .set("spark.serializer", configs.SPARK_SERIALIZER)
+        // 注册哪些类型使用Kryo序列化, 最好注册RDD中类型
+        .registerKryoClasses(
+          Array(classOf[ImmutableBytesWritable], classOf[Put])
+        )
+    }
+    // 创建SparkSession.Builder对象
     val builder: SparkSession.Builder = SparkSession
       .builder()
       .appName(clazz.getSimpleName.stripSuffix("$"))
       .config(sparkConf)
 
-    // 4. 获取SparkSession对象
+    // 获取SparkSession对象
     val session = builder.getOrCreate()
-    // 5. 返回
+    // 返回
     session
   }
 }
