@@ -2,6 +2,8 @@ package dsy.utils
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigValue}
 import dsy.config.configs
+import org.apache.hadoop.hbase.client.Put
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
@@ -46,6 +48,15 @@ object SparkUtils {
     if (configs.SPARK_IS_LOCAL) {
       sparkConf.setMaster(configs.SPARK_MASTER)
     }
+    sparkConf
+      //不验证输出参数
+      .set("spark.hadoop.validateOutputSpecs", "False")
+      // 设置使用Kryo序列
+      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+      // 注册哪些类型使用Kryo序列化, 最好注册RDD中类型
+      .registerKryoClasses(
+        Array(classOf[ImmutableBytesWritable], classOf[Put])
+      )
     // 3. 创建SparkSession.Builder对象
     val builder: SparkSession.Builder = SparkSession
       .builder()

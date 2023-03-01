@@ -45,7 +45,24 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.83</version>
         </dependency>
+        <!--Hbase依赖-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>1.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>1.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>jackson-coreutils</artifactId>
+            <version>1.8</version>
+        </dependency>
     </dependencies>
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <outputDirectory>target/classes</outputDirectory>
@@ -95,5 +112,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
