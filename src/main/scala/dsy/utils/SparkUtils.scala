@@ -60,11 +60,19 @@ object SparkUtils {
           Array(classOf[ImmutableBytesWritable], classOf[Put])
         )
     }
+
     // 创建SparkSession.Builder对象
     val builder: SparkSession.Builder = SparkSession
       .builder()
       .appName(clazz.getSimpleName.stripSuffix("$"))
       .config(sparkConf)
+
+    // 是否集成 Hive
+    if (configs.SPARK_ADD_HIVE) {
+      builder
+        .enableHiveSupport()
+        .config("hive.metastore.uris", configs.SPARK_HIVE_METASTORE_URIS)
+    }
 
     // 获取SparkSession对象
     val session = builder.getOrCreate()

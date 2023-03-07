@@ -7,59 +7,73 @@
     <groupId>org.example</groupId>
     <artifactId>dns_project</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <!--版本控制-->
+    <properties>
+        <hadoop_version>2.7.7</hadoop_version>
+        <spark_version>2.4.5</spark_version>
+        <hbase_version>1.4.13</hbase_version>
+        <jackson_version>1.8</jackson_version>
+        <fastjson_version>1.2.83</fastjson_version>
+        <config_typesafe_version>1.2.1</config_typesafe_version>
+    </properties>
 
     <dependencies>
         <!--hadoop依赖-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
-            <version>2.7.7</version>
+            <version>${hadoop_version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
-            <version>2.7.7</version>
-        </dependency>
-        <!--读取config.properties-->
-        <dependency>
-            <groupId>com.typesafe</groupId>
-            <artifactId>config</artifactId>
-            <version>1.2.1</version>
+            <version>${hadoop_version}</version>
         </dependency>
         <!--主要提供SparkConf和SparkContext对象-->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.11</artifactId>
-            <version>2.4.5</version>
+            <version>${spark_version}</version>
         </dependency>
         <!--主要提供SparkSession对象-->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.11</artifactId>
-            <version>2.4.5</version>
+            <version>${spark_version}</version>
         </dependency>
-        <!--通过json转换-->
+        <!--spark集成hive依赖-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_2.11</artifactId>
+            <version>${spark_version}</version>
         </dependency>
         <!--Hbase依赖-->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
-            <version>1.4.13</version>
+            <version>${hbase_version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
-            <version>1.4.13</version>
+            <version>${hbase_version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.fge</groupId>
             <artifactId>jackson-coreutils</artifactId>
-            <version>1.8</version>
+            <version>${jackson_version}</version>
+        </dependency>
+        <!--通过json转换-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson_version}</version>
+        </dependency>
+        <!--读取config.properties-->
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>${config_typesafe_version}</version>
         </dependency>
     </dependencies>
 

@@ -62,14 +62,14 @@ object read_hdfs_write_to_hbase {
      * family       列簇名
      * rowKeyColumn RowKey字段名称
      */
-    HbaseTools.write(
-      new_data,
-      "dsy",
-      "2181",
-      "test",
-      "info",
-      "id"
-    )
+//    HbaseTools.write(
+//      new_data,
+//      "dsy",
+//      "2181",
+//      "test",
+//      "info",
+//      "id"
+//    )
     spark.stop()
   }
 }
