@@ -1,11 +1,15 @@
 package dsy.read_hdfs
 
 import dsy.config.configs
-import dsy.utils.{HbaseTools, SparkUtils}
+import dsy.utils.SparkUtils
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 object read_hdfs_write_to_hbase {
+  // Spark应用程序与hadoop运行的用户,默认为本地用户
+  System.setProperty("user.name", configs.HADOOP_USER_NAME)
+  System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
+
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
     val spark: SparkSession = SparkUtils.createSparkSession(this.getClass)
@@ -62,14 +66,20 @@ object read_hdfs_write_to_hbase {
      * family       列簇名
      * rowKeyColumn RowKey字段名称
      */
-//    HbaseTools.write(
-//      new_data,
-//      "dsy",
-//      "2181",
-//      "test",
-//      "info",
-//      "id"
-//    )
+    //    HbaseTools.write(
+    //      new_data,
+    //      "dsy",
+    //      "2181",
+    //      "test",
+    //      "info",
+    //      "id"
+    //    )
+    new_data
+      .write
+      //写入模式
+      .mode(SaveMode.Overwrite)
+      //保存的表
+      .saveAsTable("test.test")
     spark.stop()
   }
 }
