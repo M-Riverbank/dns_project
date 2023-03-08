@@ -10,11 +10,7 @@ object configs {
   private val config: Config = ConfigFactory.load("config.properties")
 
   // spark 读取文件位置,此时与生产不一样,local为测试
-  var SPARK_CONF_FILE: String = _
-  if (SPARK_IS_LOCAL)
-    SPARK_CONF_FILE = config.getString("spark.load.file.local.test")
-  else
-    SPARK_CONF_FILE = config.getString("spark.conf.file")
+  lazy val SPARK_CONF_FILE: String = config.getString("spark.conf.file")
 
 
   // spark是否为 local 模式 ---------- 测试环境为true,生产环境为false

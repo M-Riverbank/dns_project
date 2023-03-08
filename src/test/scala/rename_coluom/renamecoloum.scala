@@ -1,16 +1,12 @@
-package dsy.read_hdfs
+package rename_coluom
 
 import dsy.config.configs
 import dsy.utils.SparkUtils
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.functions._
 
-object read_hdfs_write_to_hbase {
-  // Spark应用程序与hadoop运行的用户,默认为本地用户
-  System.setProperty("user.name", configs.HADOOP_USER_NAME)
-  System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
-
+object renamecoloum {
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
     val spark: SparkSession = SparkUtils.createSparkSession(this.getClass)
@@ -24,18 +20,27 @@ object read_hdfs_write_to_hbase {
       .option("header", "true")
       .option("multiLine", "true")
       .option("encoding", "utf-8") //utf-8
-      .csv(configs.LOAD_FILE)
+      .load(configs.LOAD_FILE)
 
     //添加序号列
     val new_data: DataFrame = data
       .withColumn("id", monotonically_increasing_id.cast(StringType))
+      //重命名列名
+      .select(
+        $"id",
+        $"client_ip".alias("clientIP"),
+        $"domain",
+        $"time",
+        $"target_ip".alias("targetIP"),
+        $"rcode",
+        $"query_type".alias("queryType"),
+        $"authority_record".alias("authorityRecord"),
+        $"add_msg".alias("addMsg"),
+        $"dns_ip".alias("dnsIp"))
 
-    new_data
-      .write
-      //写入模式
-      .mode(SaveMode.Overwrite)
-      //保存的表
-      .saveAsTable("test.test")
-    spark.stop()
+    new_data.show
+    new_data.printSchema
+
+    spark.stop
   }
 }
