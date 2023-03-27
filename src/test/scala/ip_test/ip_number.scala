@@ -4,6 +4,7 @@ import dsy.config.configs
 import dsy.utils.SparkUtils
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
+
 object ip_number {
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
@@ -20,12 +21,20 @@ object ip_number {
       .option("encoding", "utf-8") //utf-8
       .load(configs.LOAD_FILE)
 
-    data
+    //根据ip分组
+    val ip_group: DataFrame = data
       .select($"client_ip".as("client_ip"))
       .groupBy($"client_ip")
       .count()
-      .select(count("*").as("ip_count"))
-      .show()
+
+    //取前十条
+    val limit_10: DataFrame = ip_group
+      .sort($"count".desc)
+      .limit(10)
+
+    limit_10.show(10, truncate = false)
+
+    Thread.sleep(1000000000)
     /*
           +--------+
           |ip_count|

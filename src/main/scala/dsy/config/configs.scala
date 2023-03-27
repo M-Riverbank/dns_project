@@ -21,12 +21,12 @@ object configs {
   lazy val LOAD_FILE: String = config.getString("spark.load.file")
 
   // spark是否集成 Hbase 与 Hbase 配置
-  lazy val SPARK_ADD_HBASE: Boolean = config.getBoolean("spark.add.hbase")
+//  lazy val SPARK_ADD_HBASE: Boolean = config.getBoolean("spark.add.hbase")
   lazy val SPARK_HADOOP_VALIDATEOUTPUTSPECS: String = config.getString("spark.hadoop.validateOutputSpecs") //验证输出参数为否
   lazy val SPARK_SERIALIZER: String = config.getString("spark.serializer") //序列化
 
   // spark是否集成 hive 与 hive 配置
-  lazy val SPARK_ADD_HIVE: Boolean = config.getBoolean("spark.add.hive")
+//  lazy val SPARK_ADD_HIVE: Boolean = config.getBoolean("spark.add.hive")
   lazy val SPARK_HIVE_METASTORE_URIS: String = config.getString("spark.hive.metastore.uris") //元数据服务连接地址
 
   //Spark应用程序与hadoop运行的用户,默认为本地用户

@@ -1,21 +1,20 @@
-package dsy.read_hdfs
+package dsy.etl
 
 import dsy.config.configs
 import dsy.utils.SparkUtils
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
-import org.apache.spark.sql.functions._
 
-object read_hdfs_write_to_hbase {
+object save_to_hive {
   // Spark应用程序与hadoop运行的用户,默认为本地用户
   System.setProperty("user.name", configs.HADOOP_USER_NAME)
   System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
 
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
-    val spark: SparkSession = SparkUtils.createSparkSession(this.getClass)
+    val spark: SparkSession = SparkUtils.createSparkSession(this.getClass,is_Hive = true)
     //导入隐式转换
-    import spark.implicits._
 
     // 2.读取数据
     val data: DataFrame = spark
@@ -36,6 +35,7 @@ object read_hdfs_write_to_hbase {
       .mode(SaveMode.Overwrite)
       //保存的表
       .saveAsTable("test.test")
+
     spark.stop()
   }
 }

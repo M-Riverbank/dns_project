@@ -41,7 +41,10 @@ object SparkUtils {
    * @param clazz 传入类对象，应用名为类名称
    * @return sparkSession对象
    */
-  def createSparkSession(clazz: Class[_]): SparkSession = {
+  def createSparkSession(clazz: Class[_],
+                         is_Hive: Boolean = false,
+                         is_Hbase: Boolean = false
+                        ): SparkSession = {
     // 1. 构建SparkConf对象
     val sparkConf: SparkConf = loadConf(resource = configs.SPARK_CONF_FILE)
     // 2. 判断应用是否是本地模式运行，如果是设置
@@ -49,7 +52,7 @@ object SparkUtils {
       sparkConf.setMaster(configs.SPARK_MASTER)
     }
     // 3. 是否集成 Hbase
-    if (configs.SPARK_ADD_HBASE) {
+    if (is_Hbase) {
       sparkConf
         //验证输出参数
         .set("spark.hadoop.validateOutputSpecs", configs.SPARK_HADOOP_VALIDATEOUTPUTSPECS)
@@ -68,7 +71,7 @@ object SparkUtils {
       .config(sparkConf)
 
     // 是否集成 Hive
-    if (configs.SPARK_ADD_HIVE) {
+    if (is_Hive) {
       builder
         .enableHiveSupport()
         .config("hive.metastore.uris", configs.SPARK_HIVE_METASTORE_URIS)
