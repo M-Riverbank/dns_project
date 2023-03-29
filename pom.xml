@@ -15,6 +15,7 @@
         <jackson_version>1.8</jackson_version>
         <fastjson_version>1.2.83</fastjson_version>
         <config_typesafe_version>1.2.1</config_typesafe_version>
+        <mysql.version>5.1.35</mysql.version>
     </properties>
 
     <dependencies>
@@ -74,6 +75,12 @@
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
             <version>${config_typesafe_version}</version>
+        </dependency>
+        <!-- mysql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
     </dependencies>
 

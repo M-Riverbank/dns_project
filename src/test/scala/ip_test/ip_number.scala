@@ -2,14 +2,14 @@ package ip_test
 
 import dsy.config.configs
 import dsy.utils.SparkUtils
+import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 
-object ip_number {
+object ip_number extends Logging{
   def main(args: Array[String]): Unit = {
     // 1.构建SparkSession实例对象
     val spark: SparkSession = SparkUtils.createSparkSession(this.getClass)
-    import org.apache.spark.sql.functions._
     import spark.implicits._
 
     // 2.读取数据
@@ -33,6 +33,7 @@ object ip_number {
       .limit(10)
 
     limit_10.show(10, truncate = false)
+    logWarning(s"==================<测试>==================")
 
     Thread.sleep(1000000000)
     /*

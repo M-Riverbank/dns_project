@@ -2,8 +2,6 @@ package dsy.utils
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigValue}
 import dsy.config.configs
-import org.apache.hadoop.hbase.client.Put
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
@@ -13,6 +11,8 @@ import java.util
  * 创建 sparkSession 的工具类
  */
 object SparkUtils {
+
+
   /**
    * 加载Spark Application默认配置文件，设置到SparkConf中
    *
@@ -35,6 +35,7 @@ object SparkUtils {
     sparkConf
   }
 
+
   /**
    * 构建SparkSession实例对象，如果是本地模式，设置master
    *
@@ -42,26 +43,13 @@ object SparkUtils {
    * @return sparkSession对象
    */
   def createSparkSession(clazz: Class[_],
-                         is_Hive: Boolean = false,
-                         is_Hbase: Boolean = false
+                         is_Hive: Boolean = false
                         ): SparkSession = {
     // 1. 构建SparkConf对象
     val sparkConf: SparkConf = loadConf(resource = configs.SPARK_CONF_FILE)
     // 2. 判断应用是否是本地模式运行，如果是设置
     if (configs.SPARK_IS_LOCAL) {
       sparkConf.setMaster(configs.SPARK_MASTER)
-    }
-    // 3. 是否集成 Hbase
-    if (is_Hbase) {
-      sparkConf
-        //验证输出参数
-        .set("spark.hadoop.validateOutputSpecs", configs.SPARK_HADOOP_VALIDATEOUTPUTSPECS)
-        // 设置使用Kryo序列
-        .set("spark.serializer", configs.SPARK_SERIALIZER)
-        // 注册哪些类型使用Kryo序列化, 最好注册RDD中类型
-        .registerKryoClasses(
-          Array(classOf[ImmutableBytesWritable], classOf[Put])
-        )
     }
 
     // 创建SparkSession.Builder对象
@@ -79,6 +67,7 @@ object SparkUtils {
 
     // 获取SparkSession对象
     val session = builder.getOrCreate()
+
     // 返回
     session
   }
