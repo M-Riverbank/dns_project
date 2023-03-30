@@ -25,15 +25,21 @@ object configs {
   lazy val MYSQL_JDBC_USERNAME: String = config.getString("mysql.jdbc.username")
   lazy val MYSQL_JDBC_PASSWORD: String = config.getString("mysql.jdbc.password")
   //后端表输入输出源字段名
+  lazy val MYSQL_TABLE:String = config.getString("mysql_table")
   lazy val INPUT_SOURCE_FILE_NAME: String = config.getString("inputSource_field_name")
   lazy val OUTPUT_SOURCE_FILE_NAME: String = config.getString("outputSource_field_name")
 
+  /**
+   * 查询id匹配的数据(因执行时spark会在语句后添加where 1=0导致语法错误暂时弃用)
+   * @param id 唯一标识
+   * @return 与id匹配的数据
+   */
   def sql(id: Long): String = {
     s"""
        |SELECT
        |  *
        |FROM
-       |  db01.db_model
+       |  db01.tb_model
        |WHERE
        |  id = $id
        |""".stripMargin

@@ -29,15 +29,19 @@ abstract class AbstractModel() {
    * @return 规则数据
    */
   private def get_RuleData(id: Long): DataFrame = {
+
     //读取规则数据返回
-    spark.read
+    val sqlDF: DataFrame = spark.read
       .format("jdbc")
       .option("driver", configs.MYSQL_JDBC_DRIVER)
       .option("url", configs.MYSQL_JDBC_URL)
-      .option("dbtable", configs.sql(id))
+      .option("dbtable", configs.MYSQL_TABLE) //configs.sql(id)
       .option("user", configs.MYSQL_JDBC_USERNAME)
       .option("password", configs.MYSQL_JDBC_PASSWORD)
       .load()
+    import sqlDF.sparkSession.implicits._
+    sqlDF
+      .where($"id" === id)
   }
 
   private def getSourceData(mysqlDF: DataFrame): DataFrame = {
@@ -53,7 +57,7 @@ abstract class AbstractModel() {
       case "hbase" =>
         //封装标签规则中数据源的信息至HBaseMeta对象中
         val hbaseMeta: HBaseMeta = HBaseMeta.getHBaseMeta(RuleMap)
-        SourceDF=HbaseTools
+        SourceDF = HbaseTools
           .read(
             spark,
             zkHosts = hbaseMeta.zkHosts,
@@ -95,7 +99,7 @@ abstract class AbstractModel() {
     if (spark != null) spark.stop()
   }
 
-  def execute(id:Long,isHive: Boolean = false): Unit = {
+  def execute(id: Long, isHive: Boolean = false): Unit = {
     // a. 初始化
     init(isHive)
     try {
