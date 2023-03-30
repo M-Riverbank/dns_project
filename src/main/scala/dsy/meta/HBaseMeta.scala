@@ -1,5 +1,7 @@
 package dsy.meta
 
+import dsy.tools.ruleMapUtils
+
 /**
  * HBase 元数据解析存储，具体数据字段格式如下所示：
  *
@@ -28,18 +30,11 @@ object HBaseMeta {
    */
   def getHBaseMeta(ruleMap: Map[String, String]): HBaseMeta = {
     //解析Map进行封装
-    val zkHost: String = ruleMap("zkHosts")
-    val zkPort: String = ruleMap("zkPort")
-    val hbaseTable: String = ruleMap("hbaseTable")
-    val family: String = ruleMap("family")
-    val selectFieldNames: String = ruleMap("selectFieldNames")
-
-    if (zkHost == null) new RuntimeException("未提供zookeeper主机")
-    if (zkPort == null) new RuntimeException("未提供zookeeper端口")
-    if (hbaseTable == null) new RuntimeException("未提供Hbase表名")
-    if (family == null) new RuntimeException("未提供HbaseFamily")
-    if (selectFieldNames == null) new RuntimeException("未提供Hbase查询字段")
-
+    val zkHost: String = ruleMapUtils.setMetaElementValue(ruleMap,"zkHosts")
+    val zkPort: String = ruleMapUtils.setMetaElementValue(ruleMap,"zkPort")
+    val hbaseTable: String = ruleMapUtils.setMetaElementValue(ruleMap,"hbaseTable")
+    val family: String = ruleMapUtils.setMetaElementValue(ruleMap,"family")
+    val selectFieldNames: String = ruleMapUtils.setMetaElementValue(ruleMap,"selectFieldNames")
 
     //构建 HBaseMeta 对象
     HBaseMeta(

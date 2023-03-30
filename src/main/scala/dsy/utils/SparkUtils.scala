@@ -3,6 +3,7 @@ package dsy.utils
 import com.typesafe.config.{Config, ConfigFactory, ConfigValue}
 import dsy.config.configs
 import org.apache.spark.SparkConf
+import org.apache.spark.internal.Logging
 import org.apache.spark.sql.SparkSession
 
 import java.util
@@ -10,7 +11,7 @@ import java.util
 /**
  * 创建 sparkSession 的工具类
  */
-object SparkUtils {
+object SparkUtils extends Logging {
 
 
   /**
@@ -60,6 +61,7 @@ object SparkUtils {
 
     // 是否集成 Hive
     if (is_Hive) {
+      logWarning("========================== 集成 hive ==========================")
       builder
         .enableHiveSupport()
         .config("hive.metastore.uris", configs.SPARK_HIVE_METASTORE_URIS)

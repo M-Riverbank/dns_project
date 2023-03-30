@@ -84,6 +84,7 @@
     <config_typesafe_version>1.2.1</config_typesafe_version>
     <jackson_version>1.8</jackson_version>
     <hbase_version>1.4.13</hbase_version>
+    <mysql.version>5.1.35</mysql.version>
   </properties>
 </project>
 
