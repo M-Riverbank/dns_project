@@ -1,15 +1,15 @@
 package dsy.model
 
 import dsy.config.configs
-import dsy.meta.{HBaseMeta, HDFSMeta}
+import dsy.meta.read.{HBaseReadMeta, HDFSReadMeta}
+import dsy.meta.save.HiveWriteMeta
 import dsy.tools.{HbaseTools, ruleMapUtils}
 import dsy.utils.SparkUtils
 import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
 abstract class AbstractModel {
-  // 设置Spark应用程序运行的用户：root, 默认情况下为当前系统用户
-  // Spark应用程序与hadoop运行的用户,默认为本地用户
+  // Spark应用程序与hadoop运行的用户,默认为当前系统用户
   System.setProperty("user.name", configs.HADOOP_USER_NAME)
   System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
 
@@ -63,32 +63,35 @@ abstract class AbstractModel {
     var SourceDF: DataFrame = null
     RuleMap("inType").toLowerCase match {
       case "hdfs" =>
-        val hdfsMeta: HDFSMeta = HDFSMeta.getHDFSMeta(RuleMap)
+        //封装标签规则中数据源的信息至 HDFSMeta 对象中
+        val hdfsReadMeta: HDFSReadMeta = HDFSReadMeta.getObject(RuleMap)
+        //读取数据
         val reader: DataFrameReader = spark
           .read
-          .format(hdfsMeta.format)
-        if (hdfsMeta.optionsMap.nonEmpty) {
+          .format(hdfsReadMeta.format)
+        if (hdfsReadMeta.optionsMap.nonEmpty) {
           //option 写入
-          hdfsMeta.optionsMap
+          hdfsReadMeta.optionsMap
             .foreach {
               keyValue =>
                 reader.option(keyValue._1, keyValue._2)
             }
         }
-        SourceDF = reader.load(hdfsMeta.hdfsAddress) //加载数据
+        SourceDF = reader.load(hdfsReadMeta.hdfsAddress) //加载数据
 
-      case "hive" => null
+      case "hive" => return null
       case "hbase" =>
-        //封装标签规则中数据源的信息至HBaseMeta对象中
-        val hbaseMeta: HBaseMeta = HBaseMeta.getHBaseMeta(RuleMap)
+        //封装标签规则中数据源的信息至 HBaseMeta 对象中
+        val hbaseReadMeta: HBaseReadMeta = HBaseReadMeta.getObject(RuleMap)
+        //读取数据
         SourceDF = HbaseTools
           .read(
             spark,
-            zkHosts = hbaseMeta.zkHosts,
-            zkPort = hbaseMeta.zkPort,
-            table = hbaseMeta.hbaseTable,
-            family = hbaseMeta.family,
-            fields = hbaseMeta.selectFieldNames
+            zkHosts = hbaseReadMeta.zkHosts,
+            zkPort = hbaseReadMeta.zkPort,
+            table = hbaseReadMeta.hbaseTable,
+            family = hbaseReadMeta.family,
+            fields = hbaseReadMeta.selectFieldNames
           )
 
       case _ => new RuntimeException("未提供数据源信息，获取不到原始数据，无法计算")
@@ -120,10 +123,16 @@ abstract class AbstractModel {
         ruleMapUtils.GetRulesMap(mysqlDF, configs.OUTPUT_SOURCE_FILE_NAME)
 
       RuleMap("outType") match {
-        case "hive" => null
+        case "hive" =>
+          val hdfsWriteMeta: HiveWriteMeta = HiveWriteMeta.getObject(RuleMap)
+          resultDF
+            .write
+            .mode(hdfsWriteMeta.saveMode)
+            .save(hdfsWriteMeta.tableName)
+
         case "hbase" => null
         case "mysql" => null
-        case _ => new RuntimeException("未知保存格式")
+        case _ => new RuntimeException(s"未支持的保存格式 ${RuleMap("outType")}")
       }
     }
   }

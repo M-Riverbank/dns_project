@@ -1,4 +1,4 @@
-package dsy.meta
+package dsy.meta.read
 
 import dsy.tools.ruleMapUtils
 
@@ -11,22 +11,22 @@ import dsy.tools.ruleMapUtils
  * @param format      format=csv(文件格式，必须指定)
  * @param optionsMap  参数设置例如:header=true,multiLine=true,encoding=utf-8
  */
-case class HDFSMeta(
+case class HDFSReadMeta(
                      hdfsAddress: String,
                      format: String,
                      optionsMap: Map[String, String]
                    )
 
-object HDFSMeta {
+object HDFSReadMeta {
 
 
   /**
-   * 将Map集合数据解析到 HDFSMeta 中封装返回
+   * 将Map集合数据解析到 HDFSReadMeta 中封装返回
    *
    * @param ruleMap 规则map集合
-   * @return HDFS元数据对象
+   * @return 读取 hdfs 数据源封装对象 元数据对象
    */
-  def getHDFSMeta(ruleMap: Map[String, String]): HDFSMeta = {
+  def getObject(ruleMap: Map[String, String]): HDFSReadMeta = {
     //解析Map进行封装
     val hdfsAddress: String = ruleMapUtils.setMetaElementValue(ruleMap, "hdfsAddress")
     val format: String = ruleMapUtils.setMetaElementValue(ruleMap, "format")
@@ -35,7 +35,7 @@ object HDFSMeta {
       .-("format")
 
     //封装元数据对象
-    HDFSMeta(hdfsAddress, format, optionsMap)
+    HDFSReadMeta(hdfsAddress, format, optionsMap)
   }
 
 

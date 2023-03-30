@@ -8,11 +8,9 @@ import org.apache.spark.sql.types.StringType
 
 class hdfsToHive extends AbstractModel {
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
-    val sourceDF: DataFrame = businessDF
+    businessDF
       .withColumn("id", monotonically_increasing_id.cast(StringType))
-    sourceDF.show()
-    sourceDF.printSchema()
-    null
+      .drop("time")
   }
 }
 

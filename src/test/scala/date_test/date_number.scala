@@ -26,19 +26,19 @@ object date_number {
       .load(configs.LOAD_FILE)
 
     data
-      .select($"time".substr(0,10).cast(LongType).as("time"))
+      .select($"time".substr(0, 10).cast(LongType).as("time"))
       .groupBy($"time")
       .count()
       .orderBy($"time")
       .show(24)
-/*
-        +----------------+------+
-        |            time| count|
-        +----------------+------+
-        |2022 08 02 10 58|168239|
-        |2022 08 02 10 59|285801|
-        +----------------+------+
- */
+    /*
+            +----------------+------+
+            |            time| count|
+            +----------------+------+
+            |2022 08 02 10 58|168239|
+            |2022 08 02 10 59|285801|
+            +----------------+------+
+     */
 
     spark.stop()
   }
