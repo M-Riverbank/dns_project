@@ -1,6 +1,7 @@
-package dsy.meta.save
+package dsy.meta.save.impl
 
-import dsy.tools.ruleMapUtils
+import dsy.meta.save.AbstractWriteMeta
+import dsy.tools.ruleMapTools
 
 /**
  * Hive 元数据解析存储，具体数据字段格式如下所示：
@@ -15,7 +16,7 @@ case class HiveWriteMeta(
                           tableName: String
                         )
 
-object HiveWriteMeta {
+object HiveWriteMeta extends AbstractWriteMeta {
 
 
   /**
@@ -24,10 +25,12 @@ object HiveWriteMeta {
    * @param ruleMap 规则map集合
    * @return 写入 Hive 数据源封装对象 元数据对象
    */
-  def getObject(ruleMap: Map[String, String]): HiveWriteMeta = {
+  override def getObject(ruleMap: Map[String, String]): HiveWriteMeta = {
     //解析Map进行封装
-    val saveMode: String = ruleMapUtils.setMetaElementValue(ruleMap, "saveMode").toLowerCase
-    val tableName: String = ruleMapUtils.setMetaElementValue(ruleMap, "tableName")
+    val saveMode: String = ruleMapTools
+      .setMetaElementValue(ruleMap, "saveMode").toLowerCase
+    val tableName: String = ruleMapTools
+      .setMetaElementValue(ruleMap, "tableName")
 
     //封装元数据对象
     HiveWriteMeta(saveMode, tableName)

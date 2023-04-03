@@ -1,6 +1,7 @@
-package dsy.meta.read
+package dsy.meta.read.impl
 
-import dsy.tools.ruleMapUtils
+import dsy.meta.read.AbstractReadMeta
+import dsy.tools.ruleMapTools
 
 /**
  * HDFS 元数据解析存储，具体数据字段格式如下所示：
@@ -17,7 +18,7 @@ case class HDFSReadMeta(
                      optionsMap: Map[String, String]
                    )
 
-object HDFSReadMeta {
+object HDFSReadMeta extends AbstractReadMeta{
 
 
   /**
@@ -26,11 +27,12 @@ object HDFSReadMeta {
    * @param ruleMap 规则map集合
    * @return 读取 hdfs 数据源封装对象 元数据对象
    */
-  def getObject(ruleMap: Map[String, String]): HDFSReadMeta = {
+  override def getObject(ruleMap: Map[String, String]): HDFSReadMeta = {
     //解析Map进行封装
-    val hdfsAddress: String = ruleMapUtils.setMetaElementValue(ruleMap, "hdfsAddress")
-    val format: String = ruleMapUtils.setMetaElementValue(ruleMap, "format")
+    val hdfsAddress: String = ruleMapTools.setMetaElementValue(ruleMap, "hdfsAddress")
+    val format: String = ruleMapTools.setMetaElementValue(ruleMap, "format")
     val optionsMap: Map[String, String] = ruleMap
+      .-("inType")
       .-("hdfsAddress")
       .-("format")
 

@@ -1,21 +1,23 @@
 package dsy.model
 
 import dsy.config.configs
-import dsy.meta.read.{HBaseReadMeta, HDFSReadMeta}
-import dsy.meta.save.HiveWriteMeta
-import dsy.tools.{HbaseTools, ruleMapUtils}
+import dsy.tools.{readDataTools, ruleMapTools, writeDataTools}
 import dsy.utils.SparkUtils
-import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
 abstract class AbstractModel {
+
+
   // Spark应用程序与hadoop运行的用户,默认为当前系统用户
   System.setProperty("user.name", configs.HADOOP_USER_NAME)
   System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
 
+
   // 变量声明
   var spark: SparkSession = _
   var mysqlDF: DataFrame = _
+
 
   /**
    * 初始化：构建SparkSession实例对象
@@ -26,6 +28,7 @@ abstract class AbstractModel {
     spark = SparkUtils.createSparkSession(this.getClass, isHive)
   }
 
+
   /**
    * 2. 读取 mysql 规则数据返回
    *
@@ -33,7 +36,6 @@ abstract class AbstractModel {
    * @return 规则数据
    */
   private def get_RuleData(id: Long): DataFrame = {
-
     //读取规则数据返回
     val sqlDF: DataFrame = spark.read
       .format("jdbc")
@@ -48,6 +50,7 @@ abstract class AbstractModel {
       .where($"id" === id)
   }
 
+
   /**
    * 获取业务数据
    *
@@ -55,50 +58,26 @@ abstract class AbstractModel {
    * @return 业务数据
    */
   private def getSourceData(mysqlDF: DataFrame): DataFrame = {
-    //a.获取规则，解析封装
+    //a.获取规则
     val RuleMap: Map[String, String] =
-      ruleMapUtils.GetRulesMap(mysqlDF, configs.INPUT_SOURCE_FILE_NAME)
-
-    //b.读取数据源
+      ruleMapTools.GetRulesMap(mysqlDF, configs.INPUT_SOURCE_FILE_NAME)
     var SourceDF: DataFrame = null
-    RuleMap("inType").toLowerCase match {
-      case "hdfs" =>
-        //封装标签规则中数据源的信息至 HDFSMeta 对象中
-        val hdfsReadMeta: HDFSReadMeta = HDFSReadMeta.getObject(RuleMap)
-        //读取数据
-        val reader: DataFrameReader = spark
-          .read
-          .format(hdfsReadMeta.format)
-        if (hdfsReadMeta.optionsMap.nonEmpty) {
-          //option 写入
-          hdfsReadMeta.optionsMap
-            .foreach {
-              keyValue =>
-                reader.option(keyValue._1, keyValue._2)
-            }
-        }
-        SourceDF = reader.load(hdfsReadMeta.hdfsAddress) //加载数据
 
-      case "hive" => return null
-      case "hbase" =>
-        //封装标签规则中数据源的信息至 HBaseMeta 对象中
-        val hbaseReadMeta: HBaseReadMeta = HBaseReadMeta.getObject(RuleMap)
-        //读取数据
-        SourceDF = HbaseTools
-          .read(
-            spark,
-            zkHosts = hbaseReadMeta.zkHosts,
-            zkPort = hbaseReadMeta.zkPort,
-            table = hbaseReadMeta.hbaseTable,
-            family = hbaseReadMeta.family,
-            fields = hbaseReadMeta.selectFieldNames
-          )
+    //b.获取读取执行对象
+    val readDataTools: readDataTools = new readDataTools(RuleMap, spark)
 
-      case _ => new RuntimeException("未提供数据源信息，获取不到原始数据，无法计算")
+    //b.匹配读取源
+    RuleMap("inType").toLowerCase
+    match {
+      case "hdfs" => SourceDF = readDataTools.readHdfs
+      case "hive" => SourceDF = readDataTools.readHive
+      case "hbase" => SourceDF = readDataTools.readHbase
+      case _ => new RuntimeException(s"未实现的数据源 ${RuleMap("inType")}")
     }
     //c.返回业务数据
     SourceDF
   }
+
 
   /**
    * 抽象方法，对数据的具体处理,由实现类完善
@@ -118,24 +97,23 @@ abstract class AbstractModel {
    */
   private def saveDF(resultDF: DataFrame, mysqlDF: DataFrame): Unit = {
     if (resultDF != null) {
-      //a.获取规则，解析封装
+      //a.获取规则
       val RuleMap: Map[String, String] =
-        ruleMapUtils.GetRulesMap(mysqlDF, configs.OUTPUT_SOURCE_FILE_NAME)
+        ruleMapTools.GetRulesMap(mysqlDF, configs.OUTPUT_SOURCE_FILE_NAME)
 
+      //b.获取保存执行对象
+      val writeDataTools: writeDataTools = new writeDataTools(resultDF, RuleMap, spark)
+
+      //c.匹配输出
       RuleMap("outType") match {
-        case "hive" =>
-          val hdfsWriteMeta: HiveWriteMeta = HiveWriteMeta.getObject(RuleMap)
-          resultDF
-            .write
-            .mode(hdfsWriteMeta.saveMode)
-            .save(hdfsWriteMeta.tableName)
-
+        case "hive" => writeDataTools.writeHive()
         case "hbase" => null
         case "mysql" => null
-        case _ => new RuntimeException(s"未支持的保存格式 ${RuleMap("outType")}")
+        case _ => new RuntimeException(s"未实现的输出方式 ${RuleMap("outType")}")
       }
     }
   }
+
 
   /**
    * 关闭资源:应用结束,关闭会话实例对象
@@ -143,6 +121,7 @@ abstract class AbstractModel {
   private def close(): Unit = {
     if (spark != null) spark.stop()
   }
+
 
   /**
    * 模型执行流程
@@ -172,4 +151,6 @@ abstract class AbstractModel {
       close()
     }
   }
+
+
 }

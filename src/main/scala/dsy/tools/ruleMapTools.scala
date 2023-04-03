@@ -3,7 +3,9 @@ package dsy.tools
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.DataFrame
 
-object ruleMapUtils extends Logging {
+object ruleMapTools extends Logging {
+
+
   /**
    * 解析 mysql rule 字段,封装Map返回
    *
@@ -26,9 +28,12 @@ object ruleMapUtils extends Logging {
     RuleMap
   }
 
+
   def setMetaElementValue(ruleMap: Map[String, String], key: String): String = {
     val value: String = ruleMap(key)
     if (value == null) new RuntimeException(s"必须提供 $key 属性值")
     value
   }
+
+
 }

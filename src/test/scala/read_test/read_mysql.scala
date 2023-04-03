@@ -1,8 +1,8 @@
 package read_test
 
 import dsy.config.configs
-import dsy.meta.read.HDFSReadMeta
-import dsy.tools.ruleMapUtils
+import dsy.meta.read.impl.HDFSReadMeta
+import dsy.tools.ruleMapTools
 import dsy.utils.SparkUtils
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 
@@ -27,7 +27,7 @@ object read_mysql {
 
     //a.获取规则，解析封装
     val RuleMap: Map[String, String] =
-      ruleMapUtils.GetRulesMap(mysqlDF, configs.INPUT_SOURCE_FILE_NAME)
+      ruleMapTools.GetRulesMap(mysqlDF, configs.INPUT_SOURCE_FILE_NAME)
 
     RuleMap.foreach(println)
     val hdfs = HDFSReadMeta.getObject(RuleMap)

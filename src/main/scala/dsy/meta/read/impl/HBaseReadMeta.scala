@@ -1,6 +1,7 @@
-package dsy.meta.read
+package dsy.meta.read.impl
 
-import dsy.tools.ruleMapUtils
+import dsy.meta.read.AbstractReadMeta
+import dsy.tools.ruleMapTools
 
 /**
  * HBase 元数据解析存储，具体数据字段格式如下所示：
@@ -19,9 +20,11 @@ case class HBaseReadMeta(
                           hbaseTable: String,
                           family: String,
                           selectFieldNames: String
-                        )
+                        ) {
+  override def toString: String = super.toString
+}
 
-object HBaseReadMeta {
+object HBaseReadMeta extends AbstractReadMeta {
 
 
   /**
@@ -30,13 +33,13 @@ object HBaseReadMeta {
    * @param ruleMap map集合
    * @return 读取 hbase 数据源封装对象 元数据对象
    */
-  def getObject(ruleMap: Map[String, String]): HBaseReadMeta = {
+  override def getObject(ruleMap: Map[String, String]): HBaseReadMeta = {
     //解析Map进行封装
-    val zkHost: String = ruleMapUtils.setMetaElementValue(ruleMap, "zkHosts")
-    val zkPort: String = ruleMapUtils.setMetaElementValue(ruleMap, "zkPort")
-    val hbaseTable: String = ruleMapUtils.setMetaElementValue(ruleMap, "hbaseTable")
-    val family: String = ruleMapUtils.setMetaElementValue(ruleMap, "family")
-    val selectFieldNames: String = ruleMapUtils.setMetaElementValue(ruleMap, "selectFieldNames")
+    val zkHost: String = ruleMapTools.setMetaElementValue(ruleMap, "zkHosts")
+    val zkPort: String = ruleMapTools.setMetaElementValue(ruleMap, "zkPort")
+    val hbaseTable: String = ruleMapTools.setMetaElementValue(ruleMap, "hbaseTable")
+    val family: String = ruleMapTools.setMetaElementValue(ruleMap, "family")
+    val selectFieldNames: String = ruleMapTools.setMetaElementValue(ruleMap, "selectFieldNames")
 
     //构建对象返回
     HBaseReadMeta(
@@ -47,4 +50,5 @@ object HBaseReadMeta {
       selectFieldNames
     )
   }
+
 }
