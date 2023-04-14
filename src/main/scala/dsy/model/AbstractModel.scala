@@ -3,10 +3,11 @@ package dsy.model
 import dsy.config.configs
 import dsy.tools.{readDataTools, ruleMapTools, writeDataTools}
 import dsy.utils.SparkUtils
+import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
-abstract class AbstractModel {
+abstract class AbstractModel(message: String) extends Logging {
 
 
   // Spark应用程序与hadoop运行的用户,默认为当前系统用户
@@ -107,8 +108,8 @@ abstract class AbstractModel {
       //c.匹配输出
       RuleMap("outType") match {
         case "hive" => writeDataTools.writeHive()
-        case "hbase" => null
-        case "mysql" => null
+        case "hbase" => writeDataTools.writeHbase()
+        case "mysql" => writeDataTools.writeMysql()
         case _ => new RuntimeException(s"未实现的输出方式 ${RuleMap("outType")}")
       }
     }
@@ -119,7 +120,7 @@ abstract class AbstractModel {
    * 关闭资源:应用结束,关闭会话实例对象
    */
   private def close(): Unit = {
-    if (spark != null) spark.stop()
+    if (spark != null) spark.stop
   }
 
 
@@ -130,6 +131,7 @@ abstract class AbstractModel {
    * @param isHive 是否集成 hive 默认不集成
    */
   def execute(id: Long, isHive: Boolean = false): Unit = {
+    logWarning(s"message--------------->$message")
     // a. 初始化
     init(isHive)
     try {

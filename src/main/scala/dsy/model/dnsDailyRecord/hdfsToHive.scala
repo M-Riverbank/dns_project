@@ -6,7 +6,7 @@ import org.apache.spark.sql.functions.monotonically_increasing_id
 import org.apache.spark.sql.types.StringType
 
 
-class hdfsToHive extends AbstractModel {
+class hdfsToHive extends AbstractModel("读取hdfs文件存储hive数据库") {
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
     val resultDF: DataFrame = businessDF
       .withColumn("id", monotonically_increasing_id.cast(StringType))

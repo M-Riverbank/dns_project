@@ -20,9 +20,7 @@ case class HBaseReadMeta(
                           hbaseTable: String,
                           family: String,
                           selectFieldNames: String
-                        ) {
-  override def toString: String = super.toString
-}
+                        )
 
 object HBaseReadMeta extends AbstractReadMeta {
 

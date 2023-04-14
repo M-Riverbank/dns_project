@@ -20,7 +20,7 @@ object HiveWriteMeta extends AbstractWriteMeta {
 
 
   /**
-   * 将Map集合数据解析到 HDFSReadMeta 中封装返回
+   * 将Map集合数据解析到 HiveReadMeta 中封装返回
    *
    * @param ruleMap 规则map集合
    * @return 写入 Hive 数据源封装对象 元数据对象
