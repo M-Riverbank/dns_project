@@ -60,7 +60,7 @@ class readDataTools(RuleMap: Map[String, String], spark: SparkSession) {
    * @return 读取到的 hive DF
    */
   def readHive: DataFrame = {
-    //封装标签规则中数据源的信息至 HBaseMeta 对象中
+    //封装标签规则中数据源的信息至 HiveMeta 对象中
     val hiveReadMeta: HiveReadMeta = HiveReadMeta.getObject(RuleMap)
     //读取数据
     spark

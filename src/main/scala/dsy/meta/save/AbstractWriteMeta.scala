@@ -3,7 +3,7 @@ package dsy.meta.save
 import dsy.meta.AbstractMeta
 
 //保存元数据封装特质
-trait AbstractWriteMeta extends AbstractMeta {
+abstract class AbstractWriteMeta extends AbstractMeta {
 
 
   /**

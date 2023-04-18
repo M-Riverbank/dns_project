@@ -30,12 +30,14 @@ object read_mysql {
       ruleMapTools.GetRulesMap(mysqlDF, configs.INPUT_SOURCE_FILE_NAME)
 
     RuleMap.foreach(println)
-    val hdfs = HDFSReadMeta.getObject(RuleMap)
+    val hdfs: HDFSReadMeta = HDFSReadMeta.getObject(RuleMap)
     println(hdfs.hdfsAddress)
     println(hdfs.format)
     hdfs.optionsMap.foreach {
       x =>
         println(x._1, x._2)
     }
+
+    spark.stop
   }
 }

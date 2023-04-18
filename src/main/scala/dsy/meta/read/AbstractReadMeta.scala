@@ -3,7 +3,7 @@ package dsy.meta.read
 import dsy.meta.AbstractMeta
 
 // 读取元数据封装特质
-trait AbstractReadMeta extends AbstractMeta {
+abstract class AbstractReadMeta extends AbstractMeta {
 
 
   /**

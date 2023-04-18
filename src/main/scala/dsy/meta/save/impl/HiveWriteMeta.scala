@@ -27,10 +27,8 @@ object HiveWriteMeta extends AbstractWriteMeta {
    */
   override def getObject(ruleMap: Map[String, String]): HiveWriteMeta = {
     //解析Map进行封装
-    val saveMode: String = ruleMapTools
-      .setMetaElementValue(ruleMap, "saveMode").toLowerCase
-    val tableName: String = ruleMapTools
-      .setMetaElementValue(ruleMap, "tableName")
+    val saveMode: String = setMetaElementValue(ruleMap, "saveMode").toLowerCase
+    val tableName: String = setMetaElementValue(ruleMap, "tableName")
 
     //封装元数据对象
     HiveWriteMeta(saveMode, tableName)

@@ -29,8 +29,8 @@ object HDFSReadMeta extends AbstractReadMeta{
    */
   override def getObject(ruleMap: Map[String, String]): HDFSReadMeta = {
     //解析Map进行封装
-    val hdfsAddress: String = ruleMapTools.setMetaElementValue(ruleMap, "hdfsAddress")
-    val format: String = ruleMapTools.setMetaElementValue(ruleMap, "format")
+    val hdfsAddress: String = setMetaElementValue(ruleMap, "hdfsAddress")
+    val format: String = setMetaElementValue(ruleMap, "format")
     val optionsMap: Map[String, String] = ruleMap
       .-("inType")
       .-("hdfsAddress")

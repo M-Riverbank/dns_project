@@ -32,11 +32,11 @@ object HbaseWriteMeta extends AbstractWriteMeta {
   override def getObject(ruleMap: Map[String, String]): HbaseWriteMeta = {
 
     //解析Map进行封装
-    val zkHost: String = ruleMapTools.setMetaElementValue(ruleMap, "zkHosts")
-    val zkPort: String = ruleMapTools.setMetaElementValue(ruleMap, "zkPort")
-    val hbaseTable: String = ruleMapTools.setMetaElementValue(ruleMap, "hbaseTable")
-    val family: String = ruleMapTools.setMetaElementValue(ruleMap, "family")
-    val rowKeyColumn: String = ruleMapTools.setMetaElementValue(ruleMap, "rowKeyColumn")
+    val zkHost: String = setMetaElementValue(ruleMap, "zkHosts")
+    val zkPort: String = setMetaElementValue(ruleMap, "zkPort")
+    val hbaseTable: String = setMetaElementValue(ruleMap, "hbaseTable")
+    val family: String = setMetaElementValue(ruleMap, "family")
+    val rowKeyColumn: String = setMetaElementValue(ruleMap, "rowKeyColumn")
 
     //构建对象返回
     HbaseWriteMeta(zkHost, zkPort, hbaseTable, family, rowKeyColumn)

@@ -7,7 +7,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 /**
  * 写入数据工具类
  */
-class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String], spark: SparkSession) {
+class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
 
 
   /**

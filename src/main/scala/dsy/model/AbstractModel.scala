@@ -103,7 +103,7 @@ abstract class AbstractModel(message: String) extends Logging {
         ruleMapTools.GetRulesMap(mysqlDF, configs.OUTPUT_SOURCE_FILE_NAME)
 
       //b.获取保存执行对象
-      val writeDataTools: writeDataTools = new writeDataTools(resultDF, RuleMap, spark)
+      val writeDataTools: writeDataTools = new writeDataTools(resultDF, RuleMap)
 
       //c.匹配输出
       RuleMap("outType") match {
