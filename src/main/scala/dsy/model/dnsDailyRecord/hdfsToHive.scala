@@ -1,7 +1,9 @@
 package dsy.model.dnsDailyRecord
 
+import dsy.config.configs
 import dsy.model.AbstractModel
-import org.apache.spark.sql.DataFrame
+import dsy.tools.ruleMapTools
+import org.apache.spark.sql.{DataFrame, SaveMode}
 import org.apache.spark.sql.functions.monotonically_increasing_id
 import org.apache.spark.sql.types.StringType
 
@@ -11,9 +13,10 @@ class hdfsToHive extends AbstractModel("读取hdfs文件存储hive数据库") {
     val resultDF: DataFrame = businessDF
       .withColumn("id", monotonically_increasing_id.cast(StringType))
       .drop("time")
-    resultDF.show(10, truncate = false)
-    resultDF.printSchema()
-    null
+    //    resultDF.show(10, truncate = false)
+    //    resultDF.printSchema()
+    resultDF
+//    null
   }
 }
 

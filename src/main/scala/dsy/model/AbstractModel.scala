@@ -13,6 +13,7 @@ abstract class AbstractModel(message: String) extends Logging {
   // Spark应用程序与hadoop运行的用户,默认为当前系统用户
   System.setProperty("user.name", configs.HADOOP_USER_NAME)
   System.setProperty("HADOOP_USER_NAME", configs.HADOOP_USER_NAME)
+  logWarning(s"==========user.name与HADOOP_USER_NAME的用户为${configs.HADOOP_USER_NAME}==========")
 
 
   // 变量声明

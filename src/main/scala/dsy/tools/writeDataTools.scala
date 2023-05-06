@@ -2,12 +2,13 @@ package dsy.tools
 
 import dsy.meta.save.impl.HiveWriteMeta
 import dsy.meta.save.impl.HbaseWriteMeta
+import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
  * 写入数据工具类
  */
-class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
+class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]){
 
 
   /**
@@ -15,12 +16,12 @@ class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
    */
   def writeHive(): Unit = {
     //封装标签规则中数据源的信息至 HiveMeta 对象中
-    val hdfsWriteMeta: HiveWriteMeta = HiveWriteMeta.getObject(RuleMap)
+    val hiveWriteMeta: HiveWriteMeta = HiveWriteMeta.getObject(RuleMap)
     //保存结果数据
     resultDF
       .write
-      .mode(hdfsWriteMeta.saveMode)
-      .save(hdfsWriteMeta.tableName)
+      .mode(hiveWriteMeta.saveMode)
+      .saveAsTable(hiveWriteMeta.tableName)
   }
 
   /**

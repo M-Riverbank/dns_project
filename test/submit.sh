@@ -1,8 +1,8 @@
 spark-submit \
---class dsy.read.read_hive \
+--class dsy.model.dnsDailyRecord.hdfsToHive \
 --master yarn \
 --deploy-mode cluster \
 --driver-memory 3g \
 --executor-memory 2g \
---executor-cores 2 \
+--executor-cores 4 \
 /soft/data/dns_project.jar

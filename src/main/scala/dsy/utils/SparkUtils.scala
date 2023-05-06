@@ -61,7 +61,7 @@ object SparkUtils extends Logging {
 
     // 是否集成 Hive
     if (is_Hive) {
-      logWarning("========================== 集成 hive ==========================")
+      logWarning(s"========================== 集成 hive : ${configs.SPARK_HIVE_METASTORE_URIS} ==========================")
       builder
         .enableHiveSupport()
         .config("hive.metastore.uris", configs.SPARK_HIVE_METASTORE_URIS)
