@@ -7,7 +7,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
 
-abstract class AbstractModel(message: String) extends Logging {
+abstract class AbstractModel(message: String) extends Logging with Serializable  {
 
 
   // Spark应用程序与hadoop运行的用户,默认为当前系统用户
@@ -138,7 +138,7 @@ abstract class AbstractModel(message: String) extends Logging {
     try {
       // b. 获取mysql数据并缓存
       mysqlDF = get_RuleData(id)
-      mysqlDF.persist(StorageLevel.MEMORY_AND_DISK) //多次使用,缓存处理
+      mysqlDF.persist(StorageLevel.MEMORY_AND_DISK) // 调优:多次使用,缓存处理
       mysqlDF.count()
       // c. 获取业务数据
       val SourceDF: DataFrame = getSourceData(mysqlDF)
