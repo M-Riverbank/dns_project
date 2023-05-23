@@ -15,6 +15,8 @@ package dsy.model.ml
                      -梯度下降法(求导微积分)RDD
                      -牛顿迭代法(泰勒公式)DataFrame
  */
+
+//als---交替最小二乘法(推荐算法)
 class learn {
 
 }
