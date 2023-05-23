@@ -1,4 +1,4 @@
-//package streaming_test
+//package drop.streaming_test
 //
 //import java.util.concurrent.TimeUnit
 //import com.alibaba.fastjson.JSON

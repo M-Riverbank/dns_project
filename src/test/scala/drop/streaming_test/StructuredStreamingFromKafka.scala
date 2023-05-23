@@ -1,4 +1,4 @@
-//package streaming_test
+//package drop.streaming_test
 //
 //import com.alibaba.fastjson.JSON
 //import dsy.utils.SparkUtils

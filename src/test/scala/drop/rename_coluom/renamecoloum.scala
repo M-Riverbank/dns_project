@@ -1,4 +1,4 @@
-package rename_coluom
+package drop.rename_coluom
 
 import dsy.config.configs
 import dsy.utils.SparkUtils

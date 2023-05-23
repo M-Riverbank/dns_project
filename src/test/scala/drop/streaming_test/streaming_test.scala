@@ -1,11 +1,11 @@
-//package streaming_test
+//package drop.streaming_test
 //
 //import com.alibaba.fastjson.JSON
 //import dsy.utils.SparkUtils
 //import org.apache.spark.sql.DataFrame
 //import org.apache.spark.sql.streaming.{OutputMode, StreamingQuery}
 //
-//object streaming_test {
+//object drop.streaming_test {
 //  def main(args: Array[String]): Unit = {
 //    //1.获取执行对象
 //    val spark = SparkUtils.createSparkSession(this.getClass)

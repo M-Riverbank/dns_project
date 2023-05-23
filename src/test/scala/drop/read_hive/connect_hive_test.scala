@@ -1,4 +1,4 @@
-package read_hive
+package drop.read_hive
 
 import dsy.utils.SparkUtils
 import org.apache.spark.sql.SparkSession

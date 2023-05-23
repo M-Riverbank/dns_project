@@ -1,4 +1,4 @@
-package read_test
+package drop.read_test
 
 import dsy.config.configs
 import dsy.utils.SparkUtils

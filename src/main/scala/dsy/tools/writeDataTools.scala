@@ -1,14 +1,14 @@
 package dsy.tools
 
-import dsy.meta.save.impl.HiveWriteMeta
-import dsy.meta.save.impl.HbaseWriteMeta
+import dsy.config.configs
+import dsy.meta.save.impl.{HbaseWriteMeta, HiveWriteMeta, MysqlWriteMeta}
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 /**
  * 写入数据工具类
  */
-class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]){
+class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
 
 
   /**
@@ -46,7 +46,17 @@ class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]){
    * 保存结果数据至 mysql
    */
   def writeMysql(): Unit = {
-    new RuntimeException(s"未实现的数据输出 ${RuleMap("inType")}")
+    //封装标签规则中数据源的信息至 HiveMeta 对象中
+    val mysqlWriteMeta: MysqlWriteMeta = MysqlWriteMeta.getObject(RuleMap)
+    //保存结果数据
+    resultDF.write.format("jdbc")
+      .mode(mysqlWriteMeta.saveMode)
+      .option("driver", configs.MYSQL_JDBC_DRIVER)
+      .option("url", configs.MYSQL_JDBC_URL)
+      .option("dbtable", mysqlWriteMeta.tableName)
+      .option("user", configs.MYSQL_JDBC_USERNAME)
+      .option("password", configs.MYSQL_JDBC_PASSWORD)
+      .save()
   }
 
 
