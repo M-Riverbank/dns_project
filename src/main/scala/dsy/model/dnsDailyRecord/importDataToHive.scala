@@ -20,7 +20,7 @@ class importDataToHive extends AbstractModel("将hdfs文件导入存储到hive")
 
 object importDataToHive {
   def main(args: Array[String]): Unit = {
-    new importDataToHive().execute(100, isHive = true)
+    new importDataToHive().execute(1, isHive = true)
   }
 }
 
