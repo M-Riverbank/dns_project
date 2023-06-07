@@ -1,6 +1,7 @@
 package dsy.tools
 
 import dsy.config.configs
+import dsy.drop.HbaseTools
 import dsy.meta.save.impl.{HbaseWriteMeta, HiveWriteMeta, MysqlWriteMeta}
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
@@ -31,6 +32,7 @@ class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
     //封装标签规则中数据源的信息至 HiveMeta 对象中
     val hbaseWriteMeta: HbaseWriteMeta = HbaseWriteMeta.getObject(RuleMap)
     //保存结果数据
+    /*
     HbaseTools
       .write(
         resultDF,
@@ -40,6 +42,16 @@ class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
         hbaseWriteMeta.family,
         hbaseWriteMeta.rowKeyColumn
       )
+     */
+    resultDF.write
+      .mode(SaveMode.Overwrite)
+      .format("hbase")
+      .option("zkHosts", hbaseWriteMeta.zkHosts)
+      .option("zkPort", hbaseWriteMeta.zkPort)
+      .option("hbaseTable", hbaseWriteMeta.hbaseTable)
+      .option("family", hbaseWriteMeta.family)
+      .option("rowKeyColumn", hbaseWriteMeta.rowKeyColumn)
+      .save()
   }
 
   /**

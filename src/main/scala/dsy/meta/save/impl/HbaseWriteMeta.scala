@@ -36,7 +36,7 @@ object HbaseWriteMeta extends AbstractWriteMeta {
     val zkPort: String = setMetaElementValue(ruleMap, "zkPort")
     val hbaseTable: String = setMetaElementValue(ruleMap, "hbaseTable")
     val family: String = setMetaElementValue(ruleMap, "family")
-    val rowKeyColumn: String = setMetaElementValue(ruleMap, "rowKeyColumn")
+    val rowKeyColumn: String = setMetaElementValue(ruleMap, "RowKey")
 
     //构建对象返回
     HbaseWriteMeta(zkHost, zkPort, hbaseTable, family, rowKeyColumn)

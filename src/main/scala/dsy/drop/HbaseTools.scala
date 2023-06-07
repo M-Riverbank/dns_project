@@ -1,4 +1,4 @@
-package dsy.tools
+package dsy.drop
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration

@@ -1,5 +1,6 @@
 package dsy.tools
 
+import dsy.drop.HbaseTools
 import dsy.meta.read.impl.{HBaseReadMeta, HDFSReadMeta, HiveReadMeta}
 import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
 
@@ -42,6 +43,7 @@ class readDataTools(RuleMap: Map[String, String], spark: SparkSession) {
     //封装标签规则中数据源的信息至 HBaseMeta 对象中
     val hbaseReadMeta: HBaseReadMeta = HBaseReadMeta.getObject(RuleMap)
     //读取数据
+    /*
     HbaseTools
       .read(
         spark,
@@ -51,6 +53,15 @@ class readDataTools(RuleMap: Map[String, String], spark: SparkSession) {
         family = hbaseReadMeta.family,
         fields = hbaseReadMeta.selectFieldNames
       )
+     */
+    spark.read
+      .format("hbase")
+      .option("zkHosts", hbaseReadMeta.zkHosts)
+      .option("zkPort", hbaseReadMeta.zkPort)
+      .option("hbaseTable", hbaseReadMeta.hbaseTable)
+      .option("family", hbaseReadMeta.family)
+      .option("selectFields", hbaseReadMeta.selectFieldNames)
+      .load()
   }
 
 
