@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="hadoop01">
+      <paths name="自贡服务器">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

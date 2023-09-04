@@ -1,6 +1,8 @@
 package dsy.model.ml.logisticRegression
 
-import org.apache.spark.ml.feature.StringIndexer
+import org.apache.spark.ml.classification.{LogisticRegression, LogisticRegressionModel}
+import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
+import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer, VectorAssembler}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object TitanicLrClassification {
@@ -20,42 +22,24 @@ object TitanicLrClassification {
       .read
       .option("header", "true")
       .option("seq", ",")
-      .option("infertSchema", "true")
+      .option("inferSchema", "true")
       .csv("datas/titanic/train.csv")
     /*
-    TitanicDF.show(10)
-    TitanicDF.printSchema
-      +-----------+--------+------+--------------------+------+----+-----+-----+----------------+-------+-----+--------+
-      |PassengerId|Survived|Pclass|                Name|   Sex| Age|SibSp|Parch|          Ticket|   Fare|Cabin|Embarked|
-      +-----------+--------+------+--------------------+------+----+-----+-----+----------------+-------+-----+--------+
-      |          1|       0|     3|Braund, Mr. Owen ...|  male|  22|    1|    0|       A/5 21171|   7.25| null|       S|
-      |          2|       1|     1|Cumings, Mrs. Joh...|female|  38|    1|    0|        PC 17599|71.2833|  C85|       C|
-      |          3|       1|     3|Heikkinen, Miss. ...|female|  26|    0|    0|STON/O2. 3101282|  7.925| null|       S|
-      |          4|       1|     1|Futrelle, Mrs. Ja...|female|  35|    1|    0|          113803|   53.1| C123|       S|
-      |          5|       0|     3|Allen, Mr. Willia...|  male|  35|    0|    0|          373450|   8.05| null|       S|
-      |          6|       0|     3|    Moran, Mr. James|  male|null|    0|    0|          330877| 8.4583| null|       Q|
-      |          7|       0|     1|McCarthy, Mr. Tim...|  male|  54|    0|    0|           17463|51.8625|  E46|       S|
-      |          8|       0|     3|Palsson, Master. ...|  male|   2|    3|    1|          349909| 21.075| null|       S|
-      |          9|       1|     3|Johnson, Mrs. Osc...|female|  27|    0|    2|          347742|11.1333| null|       S|
-      |         10|       1|     2|Nasser, Mrs. Nich...|female|  14|    1|    0|          237736|30.0708| null|       C|
-      +-----------+--------+------+--------------------+------+----+-----+-----+----------------+-------+-----+--------+
-      only showing top 10 rows
-
     root
-     |-- PassengerId: string (nullable = true)
-     |-- Survived: string (nullable = true)
-     |-- Pclass: string (nullable = true)
-     |-- Name: string (nullable = true)
-     |-- Sex: string (nullable = true)
-     |-- Age: string (nullable = true)
-     |-- SibSp: string (nullable = true)
-     |-- Parch: string (nullable = true)
-     |-- Ticket: string (nullable = true)
-     |-- Fare: string (nullable = true)
-     |-- Cabin: string (nullable = true)
-     |-- Embarked: string (nullable = true)
+               |-- PassengerId: integer (nullable = true)
+               |-- Survived: integer (nullable = true)
+               |-- Pclass: integer (nullable = true)
+               |-- Name: string (nullable = true)
+               |-- Sex: string (nullable = true)
+               |-- Age: double (nullable = true)
+               |-- SibSp: integer (nullable = true)
+               |-- Parch: integer (nullable = true)
+               |-- Ticket: string (nullable = true)
+               |-- Fare: double (nullable = true)
+               |-- Cabin: string (nullable = true)
+               |-- Embarked: string (nullable = true)
 
-     Passengerld 整型变量，标识乘客的ID,递增变量，对预测无帮助
+      Passengerld 整型变量，标识乘客的ID,递增变量，对预测无帮助
       Survived 整型变量，标识该乘客是否幸存。0表示遇难，1表示幸存。将其转换为factor变量比较方便处理
       Pclass 整型变量，标识乘客的社会经济状态，1代表Upper, 2代表Middle, 3代表Lower
       Name 字符型变量，除包含姓和名以外，还包含Mr.Mrs.Dr.这样的具有西方文化特点的信息
@@ -98,11 +82,58 @@ object TitanicLrClassification {
     val indexerTitanicDF: DataFrame = indexer
       .fit(ageTitanicDF)
       .transform(ageTitanicDF)
-    // male -> [1.0, 0.0]    female -> [0.0, 1.0]7
-    indexerTitanicDF.show
-    indexerTitanicDF. printSchema
+    // male -> [1.0, 0.0]    female -> [0.0, 1.0]7 独热编码
+    val encoder: OneHotEncoder = new OneHotEncoder()
+      .setInputCol("sexIndex")
+      .setOutputCol("sexVector")
+      .setDropLast(false)
+    val sexTitanicDF: DataFrame = encoder.transform(indexerTitanicDF)
 
 
-    spark.stop
+//    // 2.3 将特征值组合, 使用VectorAssembler
+    val assembler: VectorAssembler = new VectorAssembler()
+      .setInputCols(
+        Array("Pclass", "sexVector", "SibSp", "Parch", "Fare", "defaultAge")
+      )
+      .setOutputCol("features")
+    val titanicDF: DataFrame = assembler.transform(sexTitanicDF)
+
+//    // 2.4 划分数据集为训练集和测试集
+    val Array(trainingDF, testingDF) = titanicDF.randomSplit(Array(0.8, 0.2))
+    trainingDF.cache().count()
+
+//    // TODO: 3. 使用算法和数据构建模型：算法参数
+    val logisticRegression: LogisticRegression = new LogisticRegression() // 逻辑回归
+      .setLabelCol("label")
+      .setFeaturesCol("features")
+      .setPredictionCol("prediction") // 使用模型预测时，预测值的列名称
+      // 二分类
+      .setFamily("binomial")
+      .setStandardization(true)
+      // 超参数
+      .setMaxIter(100) //最大迭代
+      .setRegParam(0.1)
+      .setElasticNetParam(0.8)
+    val lrModel: LogisticRegressionModel = logisticRegression.fit(trainingDF)
+    // y = θ0 + θ1x1+ θ2x2+ θ3x4+ θ4x4+ θ5x6+ θ6x6
+    println(s"coefficients: ${lrModel.coefficientMatrix}") // 斜率, θ1 ~ θ6
+    println(s"intercepts: ${lrModel.interceptVector}") // 截距, θ0
+
+//    // TODO: 4. 模型评估,使用测试数据集结果与模型预测结果比对测试评估模型
+    val predictionDF: DataFrame = lrModel.transform(testingDF)
+    predictionDF.printSchema()
+    predictionDF
+      .select("label", "prediction", "probability", "features")
+      .show(40, truncate = false)
+    // 分类中的ACCU、Precision、Recall、F-measure、Accuracy
+    val accuracy = new MulticlassClassificationEvaluator()
+      .setLabelCol("label")
+      .setPredictionCol("prediction")
+      // 四个指标名称："f1", "weightedPrecision", "weightedRecall", "accuracy"
+      .setMetricName("accuracy")
+      .evaluate(predictionDF)
+    println(s"accuracy(精确性) = $accuracy")
+
+    spark.stop()
   }
 }
