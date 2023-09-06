@@ -12,7 +12,7 @@ import org.apache.spark.storage.StorageLevel
  */
 object LrBostonRegression {
   def main(args: Array[String]): Unit = {
-    //构建sparksession实例对象
+    //构建sparksession实例对 象
     val spark: SparkSession = SparkSession.builder()
       .appName(this.getClass.getSimpleName.stripSuffix("$"))
       .master("local[4]")
