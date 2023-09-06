@@ -26,6 +26,7 @@ object configs {
   lazy val MYSQL_JDBC_PASSWORD: String = config.getString("mysql.jdbc.password")
   //后端表输入输出源字段名
   lazy val MYSQL_TABLE:String = config.getString("mysql_table")
+  lazy val HANDLE_RULE_FILENAME:String = config.getString("handle_rule_filename")
   lazy val INPUT_SOURCE_FILE_NAME: String = config.getString("inputSource_field_name")
   lazy val OUTPUT_SOURCE_FILE_NAME: String = config.getString("outputSource_field_name")
 

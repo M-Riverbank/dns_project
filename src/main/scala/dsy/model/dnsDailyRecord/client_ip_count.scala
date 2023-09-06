@@ -15,8 +15,8 @@ class client_ip_count extends AbstractModel("每个client_ip上网次数统计")
       .orderBy(countDF("count").desc)
       .limit(10)
 
-    //    resultDF.show
-    //    resultDF.printSchema
+    resultDF.show
+    resultDF.printSchema
     /*
            +-------------+-----+
            |    client_ip|count|
