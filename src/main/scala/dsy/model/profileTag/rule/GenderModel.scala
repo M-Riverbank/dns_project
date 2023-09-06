@@ -9,17 +9,7 @@ import org.apache.spark.sql.DataFrame
 /**
  * 标签模型开发：学历标签模型
  */
-class EduModel extends AbstractModel("学历标签") {
-  /*
-    学历
-        1小学    小学
-        2初中    初中
-        3高中    高中
-        4大专    大专
-        5本科    本科
-        6研究生   研究生
-        7博士    博士
-   */
+class GenderModel extends AbstractModel("学历标签") {
 
   /**
    * 抽象方法，对数据的具体处理,由实现类完善
@@ -36,9 +26,9 @@ class EduModel extends AbstractModel("学历标签") {
   }
 }
 
-object EduModel {
+object GenderModel {
   def main(args: Array[String]): Unit = {
-    new EduModel().execute(7)
+    new GenderModel().execute(7)
   }
 }
 
