@@ -3,11 +3,10 @@ package dsy.model.profileTag.rule
 import dsy.model.AbstractModel
 import dsy.tools.tagTools
 import org.apache.spark.sql.DataFrame
-
 /**
- * 标签模型开发：教育标签模型
+ * 标签模型开发：婚姻状况标签模型
  */
-class EduModel extends AbstractModel("教育标签") {
+class MarriageModel extends AbstractModel("婚姻状况标签"){
   /**
    * 抽象方法，对数据的具体处理,由实现类完善
    *
@@ -17,21 +16,17 @@ class EduModel extends AbstractModel("教育标签") {
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
     /*
-          学历
-             小学     1
-             初中     2
-             高中     3
-             大专     4
-             本科     5
-             研究生    6
-             博士     7
+          婚姻状况
+              1    未婚
+              2    已婚
+              3    离异
      */
-    tagTools.ruleMatchTag(businessDF, "edu", mysqlDF)
+    tagTools.ruleMatchTag(businessDF, "marriage", mysqlDF)
   }
 }
 
-object EduModel {
+object MarriageModel{
   def main(args: Array[String]): Unit = {
-    new EduModel().execute(8)
+    new MarriageModel().execute(10)
   }
 }

@@ -5,9 +5,9 @@ import dsy.tools.tagTools
 import org.apache.spark.sql.DataFrame
 
 /**
- * 标签模型开发：教育标签模型
+ * 标签模型开发：国籍标签模型
  */
-class EduModel extends AbstractModel("教育标签") {
+class NationalityModel extends AbstractModel("国籍标签") {
   /**
    * 抽象方法，对数据的具体处理,由实现类完善
    *
@@ -17,21 +17,19 @@ class EduModel extends AbstractModel("教育标签") {
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
     /*
-          学历
-             小学     1
-             初中     2
-             高中     3
-             大专     4
-             本科     5
-             研究生    6
-             博士     7
+          国籍
+            中国大陆      1
+            中国香港      2
+            中国澳门      3
+            中国台湾      4
+            其他         5
      */
-    tagTools.ruleMatchTag(businessDF, "edu", mysqlDF)
+    tagTools.ruleMatchTag(businessDF, "nationality", mysqlDF)
   }
 }
 
-object EduModel {
+object NationalityModel {
   def main(args: Array[String]): Unit = {
-    new EduModel().execute(8)
+    new NationalityModel().execute(11)
   }
 }

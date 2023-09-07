@@ -24,10 +24,7 @@ class GenderModel extends AbstractModel("学历标签") {
             男生 1
             女生 2
      */
-    val resultDF = tagTools.ruleMatchTag(businessDF, "gender", mysqlDF)
-    //    resultDF.show
-    //    resultDF.printSchema()
-    resultDF
+    tagTools.ruleMatchTag(businessDF, "gender", mysqlDF)
   }
 }
 

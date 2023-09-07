@@ -25,11 +25,7 @@ class jobModel extends AbstractModel("职业标签") {
             教师      5
             白领      6
      */
-    val resultDF = tagTools.ruleMatchTag(businessDF, "job", mysqlDF)
-    //    resultDF.printSchema()
-    //    resultDF.show
-    //    null
-    resultDF
+    tagTools.ruleMatchTag(businessDF, "job", mysqlDF)
   }
 }
 
