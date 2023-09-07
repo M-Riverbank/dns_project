@@ -2,6 +2,7 @@ package dsy.model.profileTag
 
 import dsy.model.AbstractModel
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
 
 class importUsersTbl extends AbstractModel("导入users数据至hbase") {
   /**
@@ -12,10 +13,13 @@ class importUsersTbl extends AbstractModel("导入users数据至hbase") {
    * @return 处理后的数据
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
-    businessDF
+    // 增加edu字段，数值随机1-7
+    val resultDF = businessDF.withColumn("edu", lit((rand() * 7 + 1).cast("Int")).cast("String"))
+    resultDF
   }
 }
-object importUsersTbl{
+
+object importUsersTbl {
   def main(args: Array[String]): Unit = {
     new importUsersTbl().execute(4)
   }

@@ -16,10 +16,21 @@ class EduModel extends AbstractModel("教育标签") {
    * @return 处理后的数据
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
-    //    val resultDF = tagTools.ruleMatchTag(businessDF, "gender", mysqlDF)
-    businessDF.show
-    mysqlDF.show
-    null
+    /*
+          学历
+             小学     1
+             初中     2
+             高中     3
+             大专     4
+             本科     5
+             研究生    6
+             博士     7
+     */
+    val resultDF = tagTools.ruleMatchTag(businessDF, "edu", mysqlDF)
+    //solve Truncated the string representation of a plan since it was too large.
+    //resultDF.show
+    //resultDF.printSchema
+    resultDF
   }
 }
 
