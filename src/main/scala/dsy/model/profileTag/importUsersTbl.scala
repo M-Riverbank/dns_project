@@ -36,13 +36,16 @@ class importUsersTbl extends AbstractModel("导入users数据至hbase") {
       .withColumn("nation", generateRandom(lit(0), lit(6)))
       // 新增籍贯字段，范围1-6(纯随机)
       .withColumn("nativePlace", RandomNumber(lit(1), lit(6)))
+      // 新增政治面貌字段，范围1-6
+      .withColumn("politicalface", generateRandom(lit(1), lit(3)))
       //修改国籍字段，范围1-5
       .withColumn("nationality", generateRandom(lit(1), lit(5)))
     //        resultDF.groupBy("edu").count().show
     //        resultDF.groupBy("nation").count().show
     //        resultDF.groupBy("nationality").count().show
     //    resultDF.groupBy("nativePlace").count().show
-    //    null
+    //        resultDF.groupBy("politicalface").count().show
+    //        null
     resultDF
   }
 }

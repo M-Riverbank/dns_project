@@ -1,7 +1,7 @@
 package dsy.model.profileTag.rule
 
 import dsy.model.AbstractModel
-import dsy.tools.tagTools
+import dsy.tools.profileTag.tagTools
 import org.apache.spark.sql.DataFrame
 /**
  * 标签模型开发：婚姻状况标签模型

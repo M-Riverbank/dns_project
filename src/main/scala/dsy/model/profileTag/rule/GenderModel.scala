@@ -2,7 +2,7 @@ package dsy.model.profileTag.rule
 
 
 import dsy.model.AbstractModel
-import dsy.tools.tagTools
+import dsy.tools.profileTag.tagTools
 import org.apache.spark.sql.DataFrame
 
 

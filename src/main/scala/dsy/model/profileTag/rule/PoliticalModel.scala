@@ -5,9 +5,9 @@ import dsy.tools.profileTag.tagTools
 import org.apache.spark.sql.DataFrame
 
 /**
- * 标签模型开发：国籍标签模型
+ * 标签模型开发：政治面貌标签模型
  */
-class NationalityModel extends AbstractModel("国籍标签") {
+class PoliticalModel extends AbstractModel("政治面貌标签") {
   /**
    * 抽象方法，对数据的具体处理,由实现类完善
    *
@@ -17,19 +17,17 @@ class NationalityModel extends AbstractModel("国籍标签") {
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
     /*
-          国籍
-            中国大陆      1
-            中国香港      2
-            中国澳门      3
-            中国台湾      4
-            其他         5
+          政治面貌
+               1    群众
+               2    党员
+               3    无党派人士
      */
-    tagTools.ruleMatchTag(businessDF, "nationality", mysqlDF)
+    tagTools.ruleMatchTag(businessDF, "politicalface", mysqlDF)
   }
 }
 
-object NationalityModel {
+object PoliticalModel {
   def main(args: Array[String]): Unit = {
-    new NationalityModel().execute(11)
+    new PoliticalModel().execute(14)
   }
 }
