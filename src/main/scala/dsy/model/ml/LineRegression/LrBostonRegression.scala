@@ -1,4 +1,4 @@
-package dsy.model.ml.regression
+package dsy.model.ml.LineRegression
 
 import org.apache.spark.ml.linalg
 import org.apache.spark.ml.linalg.Vectors

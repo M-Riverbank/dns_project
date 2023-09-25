@@ -25,7 +25,7 @@ object TitanicLrClassification {
       .option("inferSchema", "true")
       .csv("datas/titanic/train.csv")
     /*
-    root
+          root
                |-- PassengerId: integer (nullable = true)
                |-- Survived: integer (nullable = true)
                |-- Pclass: integer (nullable = true)
