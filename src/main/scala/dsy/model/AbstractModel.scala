@@ -66,7 +66,7 @@ abstract class AbstractModel(message: String) extends Logging with Serializable 
     var SourceDF: DataFrame = null
 
     //b.获取读取执行对象
-    val readDataTools: readDataTools = new readDataTools(RuleMap, spark)
+    val readDataTools: readDataTools = new readDataTools(RuleMap.-("inType"), spark)
 
     //b.匹配读取源
     RuleMap("inType").toLowerCase
@@ -74,6 +74,7 @@ abstract class AbstractModel(message: String) extends Logging with Serializable 
       case "hdfs" => SourceDF = readDataTools.readHdfs
       case "hive" => SourceDF = readDataTools.readHive
       case "hbase" => SourceDF = readDataTools.readHbase
+      case "mysql" => SourceDF = readDataTools.readMysql
       case _ => new RuntimeException(s"未实现的数据源 ${RuleMap("inType")}")
     }
     //c.返回业务数据

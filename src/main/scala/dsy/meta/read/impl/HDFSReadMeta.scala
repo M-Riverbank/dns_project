@@ -32,7 +32,6 @@ object HDFSReadMeta extends AbstractReadMeta{
     val hdfsAddress: String = setMetaElementValue(ruleMap, "hdfsAddress")
     val format: String = setMetaElementValue(ruleMap, "format")
     val optionsMap: Map[String, String] = ruleMap
-      .-("inType")
       .-("hdfsAddress")
       .-("format")
 

@@ -2,7 +2,7 @@ package dsy.tools
 
 //import dsy.drop.HbaseTools
 
-import dsy.meta.read.impl.{HBaseReadMeta, HDFSReadMeta, HiveReadMeta}
+import dsy.meta.read.impl._
 import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
 
 /**
@@ -77,5 +77,25 @@ class readDataTools(RuleMap: Map[String, String], spark: SparkSession) {
     //读取数据
     spark
       .sql(hiveReadMeta.sql)
+  }
+
+
+  /**
+   * 解析 RuleMap 封装 mysqlMeta 读取 mysql 数据返回 DF
+   *
+   * @return 读取到的 mysql DF
+   */
+  def readMysql: DataFrame = {
+    //封装标签规则中数据源的信息至 HiveMeta 对象中
+    val mysqlReadMeta: MysqlReadMeta = MysqlReadMeta.getObject(RuleMap)
+    //读取规则数据返回
+    spark.read
+      .format("jdbc")
+      .option("driver", mysqlReadMeta.driver)
+      .option("url", mysqlReadMeta.url)
+      .option("dbtable", mysqlReadMeta.dbtable)
+      .option("user", mysqlReadMeta.user)
+      .option("password", mysqlReadMeta.password)
+      .load()
   }
 }

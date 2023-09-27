@@ -30,6 +30,11 @@ object configs {
   lazy val INPUT_SOURCE_FILE_NAME: String = config.getString("inputSource_field_name")
   lazy val OUTPUT_SOURCE_FILE_NAME: String = config.getString("outputSource_field_name")
 
+  //读取数据参数默认值
+  lazy val MYSQL_DEFAULT_DRIVER: String = config.getString("read.impl.mysql.default.driver")
+  lazy val MYSQL_DEFAULT_USER: String = config.getString("read.impl.mysql.default.user")
+  lazy val MYSQL_DEFAULT_PASSWORD: String = config.getString("read.impl.mysql.default.password")
+
   /**
    * 查询id匹配的数据(因执行时spark会在语句后添加where 1=0导致语法错误暂时弃用)
    * @param id 唯一标识

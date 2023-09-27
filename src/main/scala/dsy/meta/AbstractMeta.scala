@@ -21,8 +21,8 @@ trait AbstractMeta extends Logging {
    * @param key     获取 value 的 key
    * @return Meta 对象成员值
    */
-  def setMetaElementValue(ruleMap: Map[String, String], key: String): String = {
-    val value: String = ruleMap(key)
+  def setMetaElementValue(ruleMap: Map[String, String], key: String, defaultValue: String = null): String = {
+    val value: String = ruleMap.getOrElse(key, defaultValue)
     if (value == null) new RuntimeException(s"必须提供 $key 属性值")
     value
   }

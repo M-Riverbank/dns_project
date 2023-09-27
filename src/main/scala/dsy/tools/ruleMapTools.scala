@@ -20,7 +20,9 @@ object ruleMapTools extends Logging {
       .getAs[String](inORout)
       .split("\\n")
       .map { line =>
-        val Array(key, value) = line.trim.split("=")
+        val result = line.trim.split("=")
+        val key = result(0)
+        val value = result.drop(1).mkString("=")
         (key, value)
       }.toMap
     logWarning(s"==================< ${RuleMap.mkString(",")} >==================")

@@ -6,6 +6,7 @@ import org.apache.spark.sql.functions._
 import scala.util.Random
 
 object RandomNumberTools {
+
   // udf:生成a-b的随机数,possibility越大，小数值出现的概率越高
   val generateRandom_possibility: UserDefinedFunction =
     udf(
