@@ -5,7 +5,9 @@ import java.time._
 
 object time {
   def main(args: Array[String]): Unit = {
-    val time = System.currentTimeMillis() / 1000 - new Random().nextInt(15552000)
+    val time: Long =
+      System.currentTimeMillis() / 1000 - 1563465600
+//      System.currentTimeMillis() / 1000 - new Random().nextInt(15552000)
     val instant = Instant.ofEpochSecond(time)
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
 

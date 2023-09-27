@@ -95,7 +95,9 @@ class RfmModel extends AbstractModel("RFM标签") {
         $"monetary"
       )
         rfmDF.printSchema()
-        rfmDF.orderBy($"frequency").show(10, truncate = false)
+        rfmDF
+          .orderBy($"monetary")
+          .show(10, truncate = false)
     null
   }
 }

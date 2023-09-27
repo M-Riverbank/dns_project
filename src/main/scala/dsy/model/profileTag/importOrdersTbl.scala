@@ -4,6 +4,7 @@ import dsy.model.AbstractModel
 import dsy.tools.RandomNumberTools._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.UserDefinedFunction
+import org.apache.spark.sql.types.LongType
 
 import scala.util.Random
 
@@ -54,18 +55,37 @@ class importOrdersTbl extends AbstractModel("导入orders数据至hbase") {
       (index: Int) => data(index).toString
     )
 
+    //自定义UDF函数，处理UserId: 订单表数据中会员ID -> memberid
+    val user_id_udf: UserDefinedFunction = udf(
+      (userId: String) => {
+        if (userId.toInt >= 950) {
+          val id = new Random().nextInt(950) + 1
+          id.toString
+        } else {
+          userId
+        }
+      }
+    )
+
+
     // 添加新列到 DataFrame
     val min_time: Long = System.currentTimeMillis() / 1000 - 15638400
     val max_time: Long = System.currentTimeMillis() / 1000
+    val fix_time: Long = System.currentTimeMillis() / 1000 -
+      businessDF
+        .select(max($"finishTime").as("maxTime"))
+        .first
+        .getAs[Integer]("maxTime")
     // 将会员ID值和支付方式值，使用UDF函数
     businessDF
-    //      // 成员id赋值
-    //      .withColumn("memberId", RandomNumber(lit(1), lit(950)))
-    //      // 支付方式赋值
-    //      .withColumn("paymentCode", RandomNumber(lit(0), lit(3)))
-    //      .withColumn("paymentCode", pay_code_udf($"paymentCode"))
-    //      .withColumn("paymentName", pay_name_udf($"paymentCode"))
-    //      // 修改订单时间
+      // 会员id赋值
+      .withColumn("memberId", user_id_udf($"memberId"))
+      // 支付方式赋值
+      //      .withColumn("paymentCode", RandomNumber(lit(0), lit(3)))
+      //      .withColumn("paymentCode", pay_code_udf($"paymentCode"))
+      //      .withColumn("paymentName", pay_name_udf($"paymentCode"))
+      // 修改订单时间
+      .withColumn("finishTime", $"finishTime".cast(LongType) + lit(fix_time))
     //      .withColumn("finishTime",
     //        generateRandom_possibility(
     //          lit(min_time),
@@ -81,9 +101,9 @@ class importOrdersTbl extends AbstractModel("导入orders数据至hbase") {
     // 去除空值
     //      .where($"id".isNotNull)
     //      .select($"id", $"orderAmount")
-    //      .show
+    //              .show
     //      .printSchema
-    //        null
+    //    null
   }
 }
 
