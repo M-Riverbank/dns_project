@@ -4,8 +4,8 @@ import dsy.config.configs
 import org.apache.spark.sql.types.StringType
 //import dsy.drop.HbaseTools
 import dsy.meta.save.impl.{HbaseWriteMeta, HiveWriteMeta, MysqlWriteMeta}
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
  * 写入数据工具类
@@ -54,7 +54,7 @@ class writeDataTools(resultDF: DataFrame, RuleMap: Map[String, String]) {
       .option("hbaseTable", hbaseWriteMeta.hbaseTable)
       .option("family", hbaseWriteMeta.family)
       .option("rowKeyColumn", hbaseWriteMeta.rowKeyColumn)
-      .save()
+      .save
   }
 
   /**

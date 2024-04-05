@@ -2,11 +2,13 @@ package dsy.tools.profileTag
 
 import dsy.config.configs.HANDLE_RULE_FILENAME
 import dsy.tools.ruleMapTools.GetRulesMap
+import org.apache.spark.ml.linalg
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object tagTools {
+
 
   /**
    * 依据[标签业务字段的值]与[标签规则]匹配，进行打标签（userId, tagName)
@@ -74,6 +76,45 @@ object tagTools {
         $"rules._1".as("start"),
         $"rules._2".as("end")
       )
+  }
+
+
+  /**
+   * 将KMeans模型中类簇中心点clusterCenters 索引与属性标签规则rule关联得到每个类簇中心点对应的标签名称（tagName）
+   *
+   * @param clusterCenters KMeans模型类簇中心点
+   * @param mysqlDF          属性标签数据
+   * @return 返回类簇中心点下标和与之对应的标签名称
+   */
+  def convertIndexMap(
+                       clusterCenters: Array[linalg.Vector],
+                       mysqlDF: DataFrame
+                     ): Map[Int, String] = {
+    // 1. 获取属性标签（5级标签）数据，选择Name和rule
+    val rulesMap: Map[String, String] = GetRulesMap(mysqlDF,HANDLE_RULE_FILENAME)
+
+    // 2. 获取聚类模型中簇中心及索引  ((坐标序号,坐标总分),排名)
+    val centerIndexArray: Array[((Int, Double), Int)] = clusterCenters
+      .zipWithIndex
+      .map {
+        case (vector, centerIndex) =>
+          (centerIndex, vector.toArray.sum)
+      }
+      //根据得分降序排序
+      .sortBy { case (_, score) => -score }
+      .zipWithIndex
+    // 3. 聚类类簇关联属性标签属性rule，对应聚类类簇与标签tagName
+    val indexTagMap: Map[Int, String] = centerIndexArray
+      //提取类簇索引与之对应的标签id
+      .map {
+        case ((centerIndex, _), index) =>
+          //根据类簇索引的排名获取对应的标签名
+          val tagName = rulesMap(index.toString)
+          (centerIndex, tagName)
+      }
+      .toMap
+    // 4. 返回类簇索引对应TagId的Map集合
+    indexTagMap
   }
 
 }

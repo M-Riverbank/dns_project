@@ -1,9 +1,14 @@
 package dsy.model.profileTag.ml
 
 import dsy.model.AbstractModel
-import org.apache.spark.sql.DataFrame
+import dsy.tools.profileTag.tagTools
+import org.apache.spark.ml.clustering.{KMeans, KMeansModel}
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.sql.expressions.UserDefinedFunction
+import org.apache.spark.sql.{Column, DataFrame}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DataTypes
+import org.apache.spark.storage.StorageLevel
 
 
 /**
@@ -94,11 +99,107 @@ class RfmModel extends AbstractModel("RFM标签") {
         $"frequency",
         $"monetary"
       )
-        rfmDF.printSchema()
-        rfmDF
-          .orderBy($"monetary")
-          .show(10, truncate = false)
-    null
+    //        rfmDF.printSchema()
+    //        rfmDF
+    //          .orderBy($"monetary")
+    //          .show(10, truncate = false)
+
+    /*
+    TODO: 2·按照规则给RFM进行打分（RFM_SCORE)
+        R: 1-3天=5分·4-6天=4分·7-9天=3分·10-15天=2分﹐大于16天=1分
+        F: >200=5分·150-199=4分·100-149=3分·50-99=2分·1-49=1分
+        M: >20w=5分·10-19w=4分·5-9w=3分·1-4w=2分，<1w=1分
+        使用CASE WHEN .. WHEN... ELSE .... END
+     */
+    // R 打分条件表达式
+    val rWhen: Column =
+    when($"recency".between(1, 3), 5.0)
+      .when($"recency".between(4, 6), 4.0)
+      .when($"recency".between(7, 9), 3.0)
+      .when($"recency".between(10, 15), 2.0)
+      .when($"recency".geq(16), 1.0)
+    // F 打分条件表达式
+    val fWhen: Column =
+      when($"frequency".between(1, 49), 1.0)
+        .when($"frequency".between(50, 99), 2.0)
+        .when($"frequency".between(100, 149), 3.0)
+        .when($"frequency".between(150, 199), 4.0)
+        .when($"frequency".geq(200), 5.0)
+    // M 打分条件表达式
+    val mWhen: Column =
+      when($"monetary".lt(10000), 1.0)
+        .when($"monetary".between(10000, 49999), 2.0)
+        .when($"monetary".between(50000, 99999), 3.0)
+        .when($"monetary".between(100000, 199999), 4.0)
+        .when($"monetary".geq(200000), 5.0)
+    val rfmScoreDF: DataFrame = rfmDF.select(
+      $"userId",
+      rWhen.as("r_score"),
+      fWhen.as("f_score"),
+      mWhen.as("m_score")
+    )
+    //    rfmScoreDF.printSchema
+    //    rfmScoreDF.show(100, truncate = false)
+
+
+    /*
+    TODO:3. 训练模型
+        KMeans算法，其中K=5
+     */
+    // 3.1组合R\F\M列为特征值features
+    val assembler: VectorAssembler = new VectorAssembler()
+      .setInputCols(Array("r_score", "f_score", "m_score"))
+      .setOutputCol("features")
+    val featuresDF: DataFrame = assembler.transform(rfmScoreDF)
+    //将训练数据缓存
+    featuresDF.persist(StorageLevel.MEMORY_AND_DISK)
+    // 3.2 使用KMeans聚类算法模型训并获取模型
+    val kMeansModel: KMeansModel = trainModel(featuresDF)
+    // 使用模型预测
+    val predictionDF: DataFrame = kMeansModel.transform(featuresDF)
+
+    //TODO: 4 打标签
+    //4.1聚类类簇关联属性标签数据rule，对应聚类类簇与标签tagName
+    val indexTagMap: Map[Int, String] =
+    tagTools.convertIndexMap(kMeansModel.clusterCenters, mysqlDF)
+    //使用KMeansModel预测值prediction打标签
+    // a.将索引标签Map集合厂广播变量广播出去
+    val indexTagMapBroadcast = spark.sparkContext.broadcast(indexTagMap)
+    // b.自定义UDF函数,传递预测值 prediction ,返回标签名称 tagName
+    val field_to_tag: UserDefinedFunction = udf(
+      (clusterIndex: Int) => indexTagMapBroadcast.value(clusterIndex)
+    )
+    //c.打标签
+    val modelDF: DataFrame = predictionDF
+      .select(
+        $"userId", //用户ID
+        field_to_tag(col("prediction")).as("rfm")
+      )
+    modelDF.printSchema()
+    modelDF.show(100, truncate = false)
+
+    modelDF
+  }
+
+  /**
+   * 使用KMeans算法训练模型
+   *
+   * @param dataframe 数据集
+   * @return KMeansModel模型
+   */
+  private def trainModel(dataframe: DataFrame): KMeansModel = {
+    //使用KMeans聚类算法模型训练
+    val kMeansModel: KMeansModel = new KMeans()
+      .setFeaturesCol("features")
+      .setPredictionCol("prediction")
+      .setK(5) // 设置列簇个数：5
+      .setMaxIter(20) // 设置最大迭代次数
+      .fit(dataframe)
+    //均方根误差(越小越好)
+    //println(s"WSSSE = ${kMeansModel.computeCost(featuresDF)}")
+    //WSSSE = 4.614836295542919E-28
+    // 返回
+    kMeansModel
   }
 }
 
