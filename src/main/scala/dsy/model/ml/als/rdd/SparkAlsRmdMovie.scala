@@ -68,16 +68,16 @@ object SparkAlsRmdMovie {
      * alsModel.productFeatures
      */
     // userId -> Features
-    val userFeatures: RDD[(Int, Array[Double])] = alsModel.userFeatures
-    userFeatures.take(10).foreach { tuple =>
-      println(tuple._1 + " -> " + tuple._2.mkString(","))
-    }
-    println("=======================================================")
-    // productId -> Features
-    val productFeatures: RDD[(Int, Array[Double])] = alsModel.productFeatures
-    productFeatures.take(10).foreach {
-      tuple => println(tuple._1 + " -> " + tuple._2.mkString(","))
-    }
+//    val userFeatures: RDD[(Int, Array[Double])] = alsModel.userFeatures
+//    userFeatures.take(10).foreach { tuple =>
+//      println(tuple._1 + " -> " + tuple._2.mkString(","))
+//    }
+//    println("=======================================================")
+//    // productId -> Features
+//    val productFeatures: RDD[(Int, Array[Double])] = alsModel.productFeatures
+//    productFeatures.take(10).foreach {
+//      tuple => println(tuple._1 + " -> " + tuple._2.mkString(","))
+//    }
 
     // TODO: 6. 模型评估，使用RMSE评估模型，值越小，误差越小，模型越好
     // 6.1 转换测试数据集格式RDD[((userId, ProductId), rating)]
