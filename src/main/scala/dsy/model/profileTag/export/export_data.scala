@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 package dsy.model.profileTag.export
-=======
-package dsy.model.profileTag.`export`
->>>>>>> origin/master
+
+
 
 import dsy.model.AbstractModel
 import org.apache.spark.sql.DataFrame
@@ -16,12 +14,8 @@ class export_data extends AbstractModel("导出Hbase用户画像数据"){
    * @return 处理后的数据
    */
   override def handle(businessDF: DataFrame, mysqlDF: DataFrame): DataFrame = {
-<<<<<<< HEAD
-    businessDF
-=======
     businessDF.show(100,truncate = false)
     null
->>>>>>> origin/master
   }
 }
 
